@@ -67,7 +67,7 @@ export default function DashboardPage() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {statCards.map((card) => (
           <div key={card.label} className="glass-strong rounded-2xl p-6 card-hover">
-            <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${card.color} flex items-center justify-center mb-3`}>
+            <div className={`w-10 h-10 rounded-xl bg-linear-to-br ${card.color} flex items-center justify-center mb-3`}>
               <card.icon className={`w-5 h-5 ${card.iconColor}`} />
             </div>
             <p className="text-2xl font-bold text-text-primary">{card.value}</p>

@@ -73,7 +73,7 @@ export default function SearchPage() {
     const selectedGenre = genreId ? fakeGenres.find((g) => g.id === genreId) : undefined;
 
     // Backend creates the book with all data fetched automatically
-    const newId = `b-imported-${Date.now()}`;
+    const newId = crypto.randomUUID();
     addBook({
       id: newId,
       title: book.title,
@@ -145,7 +145,7 @@ export default function SearchPage() {
         <div className="glass-strong rounded-xl p-4 flex items-center gap-3 border-l-4 border-l-success animate-fade-in-up">
           <CheckCircle2 className="w-5 h-5 text-success flex-shrink-0" />
           <div className="flex-1">
-            <p className="text-sm font-semibold text-text-primary">"{importSuccess.title}" ajouté !</p>
+            <p className="text-sm font-semibold text-text-primary">« {importSuccess.title} » ajouté !</p>
             <p className="text-xs text-text-muted">Status: TO_READ — Ajoutez une cover et un fichier PDF</p>
           </div>
           <div className="flex gap-2">
