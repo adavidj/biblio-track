@@ -1,202 +1,22 @@
 "use client";
 
-import Link from "next/link";
 import Image from "next/image";
-import {
-  BookOpen,
-  BookCheck,
-  Clock,
-  Bookmark,
-  TrendingUp,
-  ArrowRight,
-  Plus,
-  Library,
-} from "lucide-react";
-import { fakeUser, fakeStatsOverview } from "@/lib/fake-data";
+import Link from "next/link";
+import { ArrowRight, BookCheck, BookOpen, Clock3, Library, Plus, TrendingUp } from "lucide-react";
+import { EmptyState } from "@/components/shared/empty-state";
+import { PageHeader } from "@/components/shared/page-header";
+import { StatCard } from "@/components/shared/stat-card";
+import { fakeStatsOverview, fakeUser } from "@/lib/fake-data";
 import { useBookStore } from "@/lib/book-store";
-import { ApiDocsCard } from "@/components/api-docs-card";
 
 export default function DashboardPage() {
   const { books } = useBookStore();
-  const recentBooks = books.filter((b) => b.status === "IN_PROGRESS").slice(0, 4);
+  const inProgress = books.filter((book) => book.status === "IN_PROGRESS");
+  const currentBook = inProgress[0];
 
-  const statCards = [
-    {
-      label: "Total Livres",
-      value: fakeStatsOverview.totalBooks,
-      icon: BookOpen,
-      color: "from-info/15 to-info/5",
-      iconColor: "text-info",
-    },
-    {
-      label: "En cours",
-      value: fakeStatsOverview.booksInProgress,
-      icon: Clock,
-      color: "from-primary/15 to-primary/5",
-      iconColor: "text-primary",
-    },
-    {
-      label: "Terminés",
-      value: fakeStatsOverview.booksFinished,
-      icon: BookCheck,
-      color: "from-success/15 to-success/5",
-      iconColor: "text-success",
-    },
-    {
-      label: "Pages lues",
-      value: fakeStatsOverview.totalPagesRead.toLocaleString(),
-      icon: TrendingUp,
-      color: "from-warning/15 to-warning/5",
-      iconColor: "text-warning",
-    },
-  ];
-
-  return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-text-primary mb-1">
-          Bonjour, {fakeUser.firstName} 👋
-        </h1>
-        <p className="text-text-secondary">
-          Voici un résumé de votre progression de lecture
-        </p>
-      </div>
-
-      {/* Stats cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {statCards.map((card) => (
-          <div key={card.label} className="glass-strong rounded-2xl p-6 card-hover">
-            <div className={`w-10 h-10 rounded-xl bg-linear-to-br ${card.color} flex items-center justify-center mb-3`}>
-              <card.icon className={`w-5 h-5 ${card.iconColor}`} />
-            </div>
-            <p className="text-2xl font-bold text-text-primary">{card.value}</p>
-            <p className="text-sm text-text-secondary">{card.label}</p>
-          </div>
-        ))}
-      </div>
-
-      {/* Quick actions */}
-      <div className="flex flex-wrap gap-3">
-        <Link
-          href="/dashboard/search"
-          className="btn-primary text-sm px-5 py-2.5 flex items-center gap-2"
-        >
-          <Plus className="w-4 h-4" />
-          Ajouter un livre
-        </Link>
-        <Link
-          href="/dashboard/books"
-          className="btn-secondary text-sm px-5 py-2.5 flex items-center gap-2"
-        >
-          <Library className="w-4 h-4" />
-          Voir ma bibliothèque
-        </Link>
-      </div>
-
-      {/* Recent books */}
-      <div>
-        <div className="flex items-center justify-between mb-5">
-          <h2 className="text-xl font-bold text-text-primary">
-            Livres en cours
-          </h2>
-          <Link
-            href="/dashboard/books"
-            className="text-sm font-medium text-primary hover:text-primary-dark flex items-center gap-1 transition-colors"
-          >
-            Voir tout
-            <ArrowRight className="w-4 h-4" />
-          </Link>
-        </div>
-
-        {recentBooks.length === 0 ? (
-          <div className="glass-strong rounded-2xl p-12 text-center">
-            <Bookmark className="w-12 h-12 text-text-muted mx-auto mb-4" />
-            <p className="text-text-secondary mb-4">
-              Aucun livre en cours de lecture
-            </p>
-            <Link
-              href="/dashboard/search"
-              className="btn-primary text-sm px-6 py-2.5 inline-flex items-center gap-2"
-            >
-              <Plus className="w-4 h-4" />
-              Commencer à lire
-            </Link>
-          </div>
-        ) : (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {recentBooks.map((book) => {
-              const progress = book.totalPages
-                ? Math.round((book.lastReadPage / book.totalPages) * 100)
-                : 0;
-
-              return (
-                <Link
-                  key={book.id}
-                  href={`/dashboard/books/${book.id}`}
-                  className="glass-strong rounded-2xl p-5 card-hover group"
-                >
-                  <div className="w-full aspect-[3/4] rounded-xl bg-gradient-to-br from-primary/10 to-accent/10 mb-4 overflow-hidden relative">
-                    {book.coverUrl ? (
-                      <Image
-                        src={book.coverUrl}
-                        alt={book.title}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <BookOpen className="w-10 h-10 text-primary/30" />
-                      </div>
-                    )}
-                  </div>
-
-                  <h3 className="font-bold text-text-primary text-sm truncate mb-1">
-                    {book.title}
-                  </h3>
-                  <p className="text-xs text-text-muted truncate mb-3">
-                    {book.author}
-                  </p>
-
-                  <div className="w-full bg-accent-light/30 rounded-full h-1.5 mb-1.5">
-                    <div
-                      className="bg-gradient-to-r from-primary to-accent h-1.5 rounded-full transition-all duration-500"
-                      style={{ width: `${progress}%` }}
-                    />
-                  </div>
-                  <div className="flex justify-between text-xs text-text-muted">
-                    <span>
-                      p. {book.lastReadPage} / {book.totalPages}
-                    </span>
-                    <span className="font-semibold text-primary">{progress}%</span>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
-        )}
-      </div>
-      {/* API Documentation */}
-      <ApiDocsCard
-        title="Endpoints API utilisés"
-        subtitle="Données chargées au montage de cette page"
-        endpoints={[
-          {
-            method: "GET",
-            path: "/books?status=IN_PROGRESS",
-            description: "Livres en cours",
-            when: "Au chargement du dashboard pour afficher les livres en cours de lecture",
-            response: JSON.stringify({ success: true, message: "Request completed successfully", data: { data: [{ id: "uuid", title: "Les Misérables", author: "Victor Hugo", coverUrl: "https://...", status: "IN_PROGRESS", lastReadPage: 42, totalPages: 1900, genre: { id: "uuid", name: "Roman" } }], meta: { total: 3, page: 1, limit: 20, totalPages: 1 } } }, null, 2),
-          },
-          {
-            method: "GET",
-            path: "/stats/overview",
-            description: "Statistiques globales",
-            when: "Au chargement du dashboard pour afficher les 4 cartes stats (total, en cours, terminés, pages lues)",
-            response: JSON.stringify({ success: true, message: "Request completed successfully", data: { totalBooks: 12, booksFinished: 5, booksInProgress: 3, booksToRead: 4, totalPagesRead: 1250, totalSessions: 45 } }, null, 2),
-          },
-        ]}
-      />
-    </div>
-  );
+  return <div className="space-y-10"><PageHeader eyebrow="Bonjour, " title={`${fakeUser.firstName}.`} description="Voici l'essentiel pour reprendre votre lecture aujourd'hui." actions={<><Link href="/dashboard/books" className="inline-flex items-center gap-2 rounded-xl border border-[#ccd7c7] bg-[#fffef9] px-4 py-2.5 text-sm font-semibold text-[#3f513f] transition hover:bg-[#f0f4ed]"><Library className="size-4" />Ma bibliothèque</Link><Link href="/dashboard/search" className="inline-flex items-center gap-2 rounded-xl bg-[#314c35] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#263e2b]"><Plus className="size-4" />Ajouter un livre</Link></>} />
+    <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"><StatCard label="Dans la bibliothèque" value={fakeStatsOverview.totalBooks} icon={BookOpen} detail="Livres suivis au total" /><StatCard label="En cours" value={fakeStatsOverview.booksInProgress} icon={Clock3} detail="Lectures actuellement ouvertes" /><StatCard label="Terminés" value={fakeStatsOverview.booksFinished} icon={BookCheck} detail="Histoires déjà parcourues" /><StatCard label="Pages lues" value={fakeStatsOverview.totalPagesRead.toLocaleString()} icon={TrendingUp} detail="Toutes vos sessions confondues" /></section>
+    {currentBook ? <section className="overflow-hidden rounded-3xl bg-[#314c35] text-[#fbf9ef]"><div className="grid gap-0 md:grid-cols-[0.72fr_1.28fr]"><div className="relative min-h-64 bg-[radial-gradient(circle_at_44%_34%,rgba(222,235,210,0.32),transparent_46%)] p-7"><p className="text-xs font-bold uppercase tracking-[0.14em] text-[#c8dbc0]">À reprendre</p><div className="mt-8 flex items-end gap-5"><div className="relative h-44 w-28 overflow-hidden rounded-md bg-[#526e50] shadow-2xl">{currentBook.coverUrl ? <Image src={currentBook.coverUrl} alt={currentBook.title} fill className="object-cover" /> : <BookOpen className="absolute inset-0 m-auto size-9 text-[#d4e3ce]" />}</div><p className="max-w-40 font-serif text-3xl leading-none">{currentBook.title}</p></div></div><div className="flex flex-col justify-center p-7 md:p-10"><p className="text-sm text-[#cfddc9]">{currentBook.author}</p><h2 className="mt-2 max-w-lg font-serif text-4xl leading-none tracking-[-0.04em]">Reprenez là où votre lecture s&apos;est arrêtée.</h2><div className="mt-8 max-w-lg"><div className="flex justify-between text-sm text-[#d9e6d4]"><span>Page {currentBook.lastReadPage} sur {currentBook.totalPages}</span><span>{Math.round((currentBook.lastReadPage / currentBook.totalPages) * 100)} %</span></div><div className="mt-3 h-2 overflow-hidden rounded-full bg-white/15"><div className="h-full rounded-full bg-[#e5b16a]" style={{ width: `${Math.round((currentBook.lastReadPage / currentBook.totalPages) * 100)}%` }} /></div></div><Link href={`/dashboard/books/${currentBook.id}`} className="mt-8 inline-flex w-fit items-center gap-2 rounded-xl bg-[#f5eddc] px-4 py-2.5 text-sm font-bold text-[#304b35] transition hover:bg-white">Voir le livre <ArrowRight className="size-4" /></Link></div></div></section> : <EmptyState icon={BookOpen} title="Votre prochaine lecture vous attend" description="Ajoutez un livre à votre bibliothèque pour commencer à suivre votre parcours." action={<Link href="/dashboard/search" className="inline-flex items-center gap-2 rounded-xl bg-[#314c35] px-4 py-2.5 text-sm font-semibold text-white"><Plus className="size-4" />Ajouter un livre</Link>} />}
+    <section><div className="mb-5 flex items-end justify-between gap-4"><div><p className="text-xs font-bold uppercase tracking-[0.14em] text-[#6b8164]">À garder en vue</p><h2 className="mt-2 font-serif text-3xl tracking-[-0.04em] text-[#273327]">Vos lectures en cours</h2></div><Link href="/dashboard/books" className="inline-flex items-center gap-1 text-sm font-semibold text-[#466346] hover:text-[#2c482e]">Voir la bibliothèque <ArrowRight className="size-4" /></Link></div>{inProgress.length > 0 ? <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">{inProgress.slice(0, 4).map((book) => { const progress = book.totalPages ? Math.round((book.lastReadPage / book.totalPages) * 100) : 0; return <Link key={book.id} href={`/dashboard/books/${book.id}`} className="group rounded-2xl border border-[#e0e4db] bg-[#fffef9] p-4 transition hover:-translate-y-1 hover:shadow-[0_14px_30px_rgba(42,57,40,0.08)]"><div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-[#edf2e9]">{book.coverUrl ? <Image src={book.coverUrl} alt={book.title} fill className="object-cover transition duration-500 group-hover:scale-105" /> : <BookOpen className="absolute inset-0 m-auto size-8 text-[#789071]" />}</div><p className="mt-4 truncate font-serif text-xl text-[#2a3529]">{book.title}</p><p className="mt-1 truncate text-sm text-[#70806e]">{book.author}</p><div className="mt-5 h-1.5 overflow-hidden rounded-full bg-[#e8eee3]"><div className="h-full rounded-full bg-[#5d8157]" style={{ width: `${progress}%` }} /></div><div className="mt-2 flex justify-between text-xs text-[#7b8879]"><span>p. {book.lastReadPage}</span><span>{progress} %</span></div></Link>; })}</div> : null}</section>
+  </div>;
 }

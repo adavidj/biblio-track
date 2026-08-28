@@ -9,8 +9,6 @@ import {
   Download,
   Plus,
   Check,
-  ChevronDown,
-  X,
   Loader2,
   CheckCircle2,
   ArrowRight,
@@ -18,6 +16,7 @@ import {
 import { fakeExternalSearchResults, fakeGenres } from "@/lib/fake-data";
 import { useBookStore } from "@/lib/book-store";
 import { ApiDocsCard } from "@/components/api-docs-card";
+import { PageHeader } from "@/components/shared/page-header";
 
 interface ExternalBook {
   title: string;
@@ -135,10 +134,7 @@ export default function SearchPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-text-primary">Rechercher un livre</h1>
-        <p className="text-text-secondary">Trouvez et importez des livres depuis Open Library et Google Books</p>
-      </div>
+      <PageHeader eyebrow="Ajouter à la bibliothèque" title="Trouvez votre prochaine lecture" description="Recherchez un titre, importez ses informations ou ajoutez-le vous-même." />
 
       {/* Success toast */}
       {importSuccess && (
@@ -160,7 +156,7 @@ export default function SearchPage() {
       )}
 
       {/* Search bar */}
-      <form onSubmit={handleSearch} className="glass-strong rounded-2xl p-4 flex flex-col sm:flex-row gap-3">
+      <form onSubmit={handleSearch} className="flex flex-col gap-3 rounded-2xl border border-[#dfe5da] bg-[#fffef9] p-4 shadow-[0_8px_24px_rgba(42,57,40,0.04)] sm:flex-row">
         <div className="relative flex-1">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
           <input type="text" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Titre, auteur, ISBN..."
@@ -177,7 +173,7 @@ export default function SearchPage() {
 
       {/* Manual add form */}
       {manualMode && (
-        <div className="glass-strong rounded-2xl p-6 animate-fade-in-up">
+        <div className="rounded-2xl border border-[#dfe5da] bg-[#fffef9] p-6 shadow-[0_8px_24px_rgba(42,57,40,0.04)] animate-fade-in-up">
           <h2 className="text-lg font-bold text-text-primary mb-4">Ajouter un livre manuellement</h2>
           <form onSubmit={handleManualAdd} className="space-y-4">
             <div className="grid sm:grid-cols-2 gap-4">
@@ -217,7 +213,7 @@ export default function SearchPage() {
               const alreadyImported = isAlreadyImported(book.externalSourceId);
               const isImporting = importingId === book.externalSourceId;
               return (
-                <div key={book.externalSourceId} className="glass-strong rounded-2xl p-5 flex gap-5 items-start card-hover">
+                <div key={book.externalSourceId} className="flex items-start gap-5 rounded-2xl border border-[#e0e4db] bg-[#fffef9] p-5 shadow-[0_8px_24px_rgba(42,57,40,0.04)] transition hover:shadow-[0_14px_30px_rgba(42,57,40,0.08)]">
                   <div className="w-20 h-28 rounded-xl bg-gradient-to-br from-primary/10 to-accent/10 overflow-hidden relative flex-shrink-0">
                     {book.coverUrl ? (<Image src={book.coverUrl} alt={book.title} fill className="object-cover" />) : (<div className="w-full h-full flex items-center justify-center"><BookOpen className="w-8 h-8 text-primary/30" /></div>)}
                   </div>
