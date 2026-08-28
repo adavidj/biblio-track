@@ -91,7 +91,7 @@ export default function ProfilePage() {
       </div>
 
       {/* Profile Hero Card */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#4A6FA5] via-[#5B8AC5] to-[#7FB5D5] p-8 text-white shadow-xl">
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#263e2a] via-[#3f6343] to-[#72966a] p-8 text-white shadow-xl">
         {/* Decorative elements */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/3" />
         <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/4" />
@@ -152,8 +152,8 @@ export default function ProfilePage() {
         {/* Profile Form */}
         <div className="glass-strong rounded-2xl p-6 space-y-5">
           <div className="flex items-center gap-3 mb-1">
-            <div className="w-10 h-10 rounded-xl bg-[#4A6FA5]/10 flex items-center justify-center">
-              <User className="w-5 h-5 text-[#4A6FA5]" />
+            <div className="w-10 h-10 rounded-xl bg-[#53764b]/10 flex items-center justify-center">
+              <User className="w-5 h-5 text-[#53764b]" />
             </div>
             <div>
               <h2 className="text-lg font-bold text-text-primary">Informations</h2>
@@ -162,9 +162,9 @@ export default function ProfilePage() {
           </div>
 
           {success && (
-            <div className="flex items-center gap-2 p-3 rounded-xl bg-[#4CAF7D]/10 border border-[#4CAF7D]/20">
-              <Check className="w-4 h-4 text-[#4CAF7D]" />
-              <p className="text-sm font-medium text-[#4CAF7D]">{success}</p>
+            <div className="flex items-center gap-2 p-3 rounded-xl bg-[#4f8a61]/10 border border-[#4f8a61]/20">
+              <Check className="w-4 h-4 text-[#4f8a61]" />
+              <p className="text-sm font-medium text-[#4f8a61]">{success}</p>
             </div>
           )}
 
@@ -177,7 +177,7 @@ export default function ProfilePage() {
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
                   required
-                  className="w-full px-4 py-3 rounded-xl bg-white/60 border border-[#4A6FA5]/10 text-sm font-medium text-text-primary placeholder:text-text-muted transition-all hover:border-[#4A6FA5]/25"
+                  className="w-full px-4 py-3 rounded-xl bg-white/60 border border-[#53764b]/15 text-sm font-medium text-text-primary placeholder:text-text-muted transition-all hover:border-[#53764b]/35"
                 />
               </div>
               <div>
@@ -187,7 +187,7 @@ export default function ProfilePage() {
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
                   required
-                  className="w-full px-4 py-3 rounded-xl bg-white/60 border border-[#4A6FA5]/10 text-sm font-medium text-text-primary placeholder:text-text-muted transition-all hover:border-[#4A6FA5]/25"
+                  className="w-full px-4 py-3 rounded-xl bg-white/60 border border-[#53764b]/15 text-sm font-medium text-text-primary placeholder:text-text-muted transition-all hover:border-[#53764b]/35"
                 />
               </div>
             </div>
@@ -200,7 +200,7 @@ export default function ProfilePage() {
                   type="email"
                   value={fakeUser.email}
                   disabled
-                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/40 border border-[#4A6FA5]/10 text-sm font-medium text-text-muted cursor-not-allowed"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/40 border border-[#53764b]/15 text-sm font-medium text-text-muted cursor-not-allowed"
                 />
               </div>
             </div>
@@ -218,8 +218,8 @@ export default function ProfilePage() {
         {/* Password */}
         <div className="glass-strong rounded-2xl p-6 space-y-5">
           <div className="flex items-center gap-3 mb-1">
-            <div className="w-10 h-10 rounded-xl bg-[#D65F5F]/10 flex items-center justify-center">
-              <Shield className="w-5 h-5 text-[#D65F5F]" />
+            <div className="w-10 h-10 rounded-xl bg-[#b85e55]/10 flex items-center justify-center">
+              <Shield className="w-5 h-5 text-[#b85e55]" />
             </div>
             <div>
               <h2 className="text-lg font-bold text-text-primary">Sécurité</h2>
@@ -228,9 +228,9 @@ export default function ProfilePage() {
           </div>
 
           {passwordSuccess && (
-            <div className="flex items-center gap-2 p-3 rounded-xl bg-[#4CAF7D]/10 border border-[#4CAF7D]/20">
-              <Check className="w-4 h-4 text-[#4CAF7D]" />
-              <p className="text-sm font-medium text-[#4CAF7D]">{passwordSuccess}</p>
+            <div className="flex items-center gap-2 p-3 rounded-xl bg-[#4f8a61]/10 border border-[#4f8a61]/20">
+              <Check className="w-4 h-4 text-[#4f8a61]" />
+              <p className="text-sm font-medium text-[#4f8a61]">{passwordSuccess}</p>
             </div>
           )}
 
@@ -245,7 +245,7 @@ export default function ProfilePage() {
                   onChange={(e) => setCurrentPassword(e.target.value)}
                   required
                   placeholder="••••••••"
-                  className="w-full pl-10 pr-11 py-3 rounded-xl bg-white/60 border border-[#4A6FA5]/10 text-sm font-medium text-text-primary placeholder:text-text-muted transition-all hover:border-[#4A6FA5]/25"
+                  className="w-full pl-10 pr-11 py-3 rounded-xl bg-white/60 border border-[#53764b]/15 text-sm font-medium text-text-primary placeholder:text-text-muted transition-all hover:border-[#53764b]/35"
                 />
                 <button
                   type="button"
@@ -268,7 +268,7 @@ export default function ProfilePage() {
                   required
                   minLength={8}
                   placeholder="Min. 8 caractères"
-                  className="w-full pl-10 pr-11 py-3 rounded-xl bg-white/60 border border-[#4A6FA5]/10 text-sm font-medium text-text-primary placeholder:text-text-muted transition-all hover:border-[#4A6FA5]/25"
+                  className="w-full pl-10 pr-11 py-3 rounded-xl bg-white/60 border border-[#53764b]/15 text-sm font-medium text-text-primary placeholder:text-text-muted transition-all hover:border-[#53764b]/35"
                 />
                 <button
                   type="button"
@@ -279,7 +279,7 @@ export default function ProfilePage() {
                 </button>
               </div>
               {newPassword.length > 0 && newPassword.length < 8 && (
-                <p className="text-xs text-[#D65F5F] mt-1.5">Minimum 8 caractères</p>
+                <p className="text-xs text-[#b85e55] mt-1.5">Minimum 8 caractères</p>
               )}
             </div>
 
@@ -309,7 +309,7 @@ export default function ProfilePage() {
           <p><span className="text-[#5BA3D9] font-semibold">GET</span> /users/me — Voir le profil</p>
           <p><span className="text-[#E8A838] font-semibold">PATCH</span> /users/me — Modifier</p>
           <p><span className="text-[#E8A838] font-semibold">PATCH</span> /users/me/avatar — Upload</p>
-          <p><span className="text-[#D65F5F] font-semibold">DELETE</span> /users/me/avatar — Supprimer</p>
+          <p><span className="text-[#b85e55] font-semibold">DELETE</span> /users/me/avatar — Supprimer</p>
         </div>
       </div>
 

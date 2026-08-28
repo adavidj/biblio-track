@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { fakeNotifications } from "@/lib/fake-data";
 import { ApiDocsCard } from "@/components/api-docs-card";
+import { PageHeader } from "@/components/shared/page-header";
 
 const TYPE_ICONS: Record<string, typeof Bell> = {
   BOOK_ADDED: BookOpen,
@@ -52,27 +53,7 @@ export default function NotificationsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-text-primary">
-            Notifications
-          </h1>
-          <p className="text-text-secondary">
-            {unreadCount > 0
-              ? `${unreadCount} non lue${unreadCount > 1 ? "s" : ""}`
-              : "Tout est à jour"}
-          </p>
-        </div>
-        {unreadCount > 0 && (
-          <button
-            onClick={handleMarkAllRead}
-            className="btn-secondary text-sm px-5 py-2.5 flex items-center gap-2"
-          >
-            <CheckCircle2 className="w-4 h-4" />
-            Tout marquer comme lu
-          </button>
-        )}
-      </div>
+      <PageHeader eyebrow="Votre activité" title="Notifications" description={unreadCount > 0 ? `${unreadCount} non lue${unreadCount > 1 ? "s" : ""}` : "Tout est à jour"} actions={unreadCount > 0 ? <button onClick={handleMarkAllRead} className="inline-flex items-center gap-2 rounded-xl border border-[#ccd7c7] bg-[#fffef9] px-4 py-2.5 text-sm font-semibold text-[#3f513f] transition hover:bg-[#f0f4ed]"><CheckCircle2 className="size-4" />Tout marquer comme lu</button> : undefined} />
 
       {notifications.length === 0 ? (
         <div className="glass-strong rounded-2xl p-12 text-center">

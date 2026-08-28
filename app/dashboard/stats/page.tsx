@@ -21,8 +21,9 @@ import {
 } from "recharts";
 import { fakeStatsOverview, fakeStatsProgress } from "@/lib/fake-data";
 import { ApiDocsCard } from "@/components/api-docs-card";
+import { PageHeader } from "@/components/shared/page-header";
 
-const COLORS = ["#4A6FA5", "#7FB5D5", "#B8D8E8", "#5BA3D9"];
+const COLORS = ["#3f6942", "#7fa171", "#c7d9ba", "#b7905b"];
 
 export default function StatsPage() {
   const overview = fakeStatsOverview;
@@ -89,18 +90,13 @@ export default function StatsPage() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold text-text-primary">Statistiques</h1>
-        <p className="text-text-secondary">
-          Suivez votre progression de lecture en détail
-        </p>
-      </div>
+      <PageHeader eyebrow="Votre rythme" title="Statistiques de lecture" description="Observez votre progression sans perdre de vue le plaisir de lire." />
 
       {/* Overview cards */}
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
         {statCards.map((card) => (
-          <div key={card.label} className="glass-strong rounded-2xl p-6 card-hover">
-            <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${card.color} flex items-center justify-center mb-3`}>
+          <div key={card.label} className="glass-strong rounded-2xl p-4 sm:p-5 card-hover">
+            <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${card.color} flex items-center justify-center mb-2`}>
               <card.icon className={`w-5 h-5 ${card.iconColor}`} />
             </div>
             <p className="text-2xl font-bold text-text-primary">{card.value}</p>
@@ -121,34 +117,34 @@ export default function StatsPage() {
               <AreaChart data={chartData}>
                 <defs>
                   <linearGradient id="colorPages" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#4A6FA5" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#4A6FA5" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#3f6942" stopOpacity={0.28} />
+                    <stop offset="95%" stopColor="#3f6942" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(74,111,165,0.1)" />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(63,105,66,0.12)" />
                 <XAxis
                   dataKey="date"
-                  tick={{ fontSize: 12, fill: "#8a95a5" }}
+                  tick={{ fontSize: 12, fill: "#849080" }}
                   axisLine={false}
                   tickLine={false}
                 />
                 <YAxis
-                  tick={{ fontSize: 12, fill: "#8a95a5" }}
+                  tick={{ fontSize: 12, fill: "#849080" }}
                   axisLine={false}
                   tickLine={false}
                 />
                 <Tooltip
                   contentStyle={{
                     background: "rgba(255,255,255,0.9)",
-                    border: "1px solid rgba(74,111,165,0.15)",
+                    border: "1px solid rgba(63,105,66,0.16)",
                     borderRadius: "12px",
-                    boxShadow: "0 4px 12px rgba(74,111,165,0.1)",
+                    boxShadow: "0 8px 20px rgba(42,57,40,0.1)",
                   }}
                 />
                 <Area
                   type="monotone"
                   dataKey="pages"
-                  stroke="#4A6FA5"
+                  stroke="#3f6942"
                   strokeWidth={2}
                   fillOpacity={1}
                   fill="url(#colorPages)"
@@ -186,9 +182,9 @@ export default function StatsPage() {
                 <Tooltip
                   contentStyle={{
                     background: "rgba(255,255,255,0.9)",
-                    border: "1px solid rgba(74,111,165,0.15)",
+                    border: "1px solid rgba(63,105,66,0.16)",
                     borderRadius: "12px",
-                    boxShadow: "0 4px 12px rgba(74,111,165,0.1)",
+                    boxShadow: "0 8px 20px rgba(42,57,40,0.1)",
                   }}
                 />
               </PieChart>

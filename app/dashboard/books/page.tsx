@@ -13,6 +13,8 @@ import {
 import { fakeGenres } from "@/lib/fake-data";
 import { useBookStore } from "@/lib/book-store";
 import { ApiDocsCard } from "@/components/api-docs-card";
+import { EmptyState } from "@/components/shared/empty-state";
+import { PageHeader } from "@/components/shared/page-header";
 
 const STATUS_OPTIONS = [
   { value: "", label: "Tous" },
@@ -75,23 +77,15 @@ export default function BooksPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-text-primary">Mes Livres</h1>
-          <p className="text-text-secondary">Gérez votre bibliothèque personnelle</p>
-        </div>
-        <Link
-          href="/dashboard/search"
-          className="btn-primary text-sm px-5 py-2.5 flex items-center gap-2"
-        >
-          <Plus className="w-4 h-4" />
-          Ajouter un livre
-        </Link>
-      </div>
+      <PageHeader
+        eyebrow="Ma collection"
+        title="Votre bibliothèque"
+        description="Retrouvez, filtrez et reprenez chaque livre à votre rythme."
+        actions={<Link href="/dashboard/search" className="inline-flex items-center gap-2 rounded-xl bg-[#314c35] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#263e2b]"><Plus className="size-4" />Ajouter un livre</Link>}
+      />
 
       {/* Filters */}
-      <div className="glass-strong rounded-2xl p-4 flex flex-col sm:flex-row gap-3">
+      <div className="flex flex-col gap-3 rounded-2xl border border-[#dfe5da] bg-[#fffef9] p-4 shadow-[0_8px_24px_rgba(42,57,40,0.04)] sm:flex-row">
         <div className="relative flex-1">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
           <input
@@ -148,17 +142,7 @@ export default function BooksPage() {
 
       {/* Books grid */}
       {paginatedBooks.length === 0 ? (
-        <div className="glass-strong rounded-2xl p-12 text-center">
-          <BookOpen className="w-12 h-12 text-text-muted mx-auto mb-4" />
-          <p className="text-text-secondary mb-2">Aucun livre trouvé</p>
-          <Link
-            href="/dashboard/search"
-            className="btn-primary text-sm px-6 py-2.5 inline-flex items-center gap-2"
-          >
-            <Plus className="w-4 h-4" />
-            Ajouter un livre
-          </Link>
-        </div>
+        <EmptyState icon={BookOpen} title="Aucun livre à afficher" description="Modifiez vos filtres ou ajoutez un premier livre à votre bibliothèque." action={<Link href="/dashboard/search" className="inline-flex items-center gap-2 rounded-xl bg-[#314c35] px-4 py-2.5 text-sm font-semibold text-white"><Plus className="size-4" />Ajouter un livre</Link>} />
       ) : (
         <>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -170,7 +154,7 @@ export default function BooksPage() {
               return (
                 <div
                   key={book.id}
-                  className="glass-strong rounded-2xl p-5 card-hover group relative"
+                  className="group relative rounded-2xl border border-[#e0e4db] bg-[#fffef9] p-4 shadow-[0_8px_24px_rgba(42,57,40,0.04)] transition hover:-translate-y-1 hover:shadow-[0_14px_30px_rgba(42,57,40,0.08)]"
                 >
                   <button
                     onClick={(e) => {

@@ -4,213 +4,363 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowRight,
-  BookCheck,
+  BookMarked,
   BookOpen,
-  Clock3,
+  ChevronRight,
+  CircleCheck,
   Library,
   Plus,
-  TrendingUp,
+  Sparkles,
+  Target,
+  Timer,
 } from "lucide-react";
-import { EmptyState } from "@/components/shared/empty-state";
-import { PageHeader } from "@/components/shared/page-header";
-import { StatCard } from "@/components/shared/stat-card";
-import { fakeStatsOverview, fakeUser } from "@/lib/fake-data";
+import {
+  fakeStatsOverview,
+  fakeStatsProgress,
+  fakeUser,
+} from "@/lib/fake-data";
 import { useBookStore } from "@/lib/book-store";
+
+function ReadingProgress({ value }: { value: number }) {
+  return (
+    <div className="h-1.5 overflow-hidden rounded-full bg-white/20">
+      <div
+        className="h-full rounded-full bg-[#d5ed8b]"
+        style={{ width: `${Math.min(100, Math.max(0, value))}%` }}
+      />
+    </div>
+  );
+}
 
 export default function DashboardPage() {
   const { books } = useBookStore();
-  const inProgress = books.filter((book) => book.status === "IN_PROGRESS");
-  const currentBook = inProgress[0];
+  const readingBooks = books.filter((book) => book.status === "IN_PROGRESS");
+  const currentBook = readingBooks[0];
+  const shelfBooks = readingBooks.slice(1, 4);
+  const completedThisWeek = fakeStatsProgress
+    .slice(-7)
+    .reduce((sum, day) => sum + day.pagesRead, 0);
+  const weeklyGoal = 180;
+  const goalProgress = Math.min(
+    100,
+    Math.round((completedThisWeek / weeklyGoal) * 100),
+  );
+  const currentProgress = currentBook?.totalPages
+    ? Math.round((currentBook.lastReadPage / currentBook.totalPages) * 100)
+    : 0;
 
   return (
-    <div className="space-y-10">
-      <PageHeader
-        eyebrow="Bonjour, "
-        title={`${fakeUser.firstName}.`}
-        description="Voici l'essentiel pour reprendre votre lecture aujourd'hui."
-        actions={
-          <>
-            <Link
-              href="/dashboard/books"
-              className="inline-flex items-center gap-2 rounded-xl border border-[#ccd7c7] bg-[#fffef9] px-4 py-2.5 text-sm font-semibold text-[#3f513f] transition hover:bg-[#f0f4ed]"
-            >
-              <Library className="size-4" />
-              Ma bibliothèque
-            </Link>
-            <Link
-              href="/dashboard/search"
-              className="inline-flex items-center gap-2 rounded-xl bg-[#314c35] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#263e2b]"
-            >
-              <Plus className="size-4" />
-              Ajouter un livre
-            </Link>
-          </>
-        }
-      />
-      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard
-          label="Dans la bibliothèque"
-          value={fakeStatsOverview.totalBooks}
-          icon={BookOpen}
-          detail="Livres suivis au total"
-        />
-        <StatCard
-          label="En cours"
-          value={fakeStatsOverview.booksInProgress}
-          icon={Clock3}
-          detail="Lectures actuellement ouvertes"
-        />
-        <StatCard
-          label="Terminés"
-          value={fakeStatsOverview.booksFinished}
-          icon={BookCheck}
-          detail="Histoires déjà parcourues"
-        />
-        <StatCard
-          label="Pages lues"
-          value={fakeStatsOverview.totalPagesRead.toLocaleString()}
-          icon={TrendingUp}
-          detail="Toutes vos sessions confondues"
-        />
-      </section>
-      {currentBook ? (
-        <section className="overflow-hidden rounded-3xl bg-[#314c35] text-[#fbf9ef]">
-          <div className="grid gap-0 md:grid-cols-[0.72fr_1.28fr]">
-            <div className="relative min-h-64 bg-[radial-gradient(circle_at_44%_34%,rgba(222,235,210,0.32),transparent_46%)] p-7">
-              <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#c8dbc0]">
-                À reprendre
-              </p>
-              <div className="mt-8 flex items-end gap-5">
-                <div className="relative h-44 w-28 overflow-hidden rounded-md bg-[#526e50] shadow-2xl">
-                  {currentBook.coverUrl ? (
-                    <Image
-                      src={currentBook.coverUrl}
-                      alt={currentBook.title}
-                      fill
-                      className="object-cover"
-                    />
-                  ) : (
-                    <BookOpen className="absolute inset-0 m-auto size-9 text-[#d4e3ce]" />
-                  )}
-                </div>
-                <p className="max-w-40 font-serif text-3xl leading-none">
+    <div className="space-y-8 pb-5">
+      <header className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+        <div>
+          <p className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-[#71856a]">
+            <Sparkles className="size-3.5" /> Espace lecture
+          </p>
+          <h1 className="font-serif text-4xl tracking-[-0.045em] text-[#263326] sm:text-5xl">
+            Bonjour, {fakeUser.firstName}.
+          </h1>
+          <p className="mt-2 text-sm text-[#697567] sm:text-base">
+            Votre bibliothèque avance, une page après l&apos;autre.
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <Link
+            href="/dashboard/books"
+            className="inline-flex h-11 items-center gap-2 rounded-xl border border-[#d7dfd2] bg-[#fffef9] px-4 text-sm font-semibold text-[#40523f] transition hover:border-[#afc4a7] hover:bg-white"
+          >
+            <Library className="size-4" />
+            Bibliothèque
+          </Link>
+          <Link
+            href="/dashboard/search"
+            className="inline-flex h-11 items-center gap-2 rounded-xl bg-[#314c35] px-4 text-sm font-semibold text-white shadow-[0_10px_20px_rgba(49,76,53,0.18)] transition hover:bg-[#263e2a]"
+          >
+            <Plus className="size-4" />
+            Ajouter un livre
+          </Link>
+        </div>
+      </header>
+
+      <section className="grid gap-5 xl:grid-cols-[minmax(0,1.55fr)_minmax(19rem,0.75fr)]">
+        {currentBook ? (
+          <article className="relative min-h-[23rem] overflow-hidden rounded-[1.75rem] bg-[#2c4933] p-6 text-[#fbfbf3] shadow-[0_20px_45px_rgba(38,61,42,0.22)] sm:p-8">
+            <div className="absolute -right-24 -top-32 size-80 rounded-full bg-[#8fb177]/20 blur-3xl" />
+            <div className="absolute -bottom-36 left-1/3 size-80 rounded-full bg-[#e1d395]/10 blur-3xl" />
+            <div className="relative flex h-full flex-col justify-between gap-7 sm:flex-row sm:items-end">
+              <div className="max-w-lg">
+                <p className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-xs font-semibold text-[#e4efdf]">
+                  <BookOpen className="size-3.5" />
+                  Lecture en cours
+                </p>
+                <p className="max-w-md font-serif text-3xl leading-tight tracking-[-0.035em] sm:text-4xl">
                   {currentBook.title}
                 </p>
-              </div>
-            </div>
-            <div className="flex flex-col justify-center p-7 md:p-10">
-              <p className="text-sm text-[#cfddc9]">{currentBook.author}</p>
-              <h2 className="mt-2 max-w-lg font-serif text-4xl leading-none tracking-[-0.04em]">
-                Reprenez là où votre lecture s&apos;est arrêtée.
-              </h2>
-              <div className="mt-8 max-w-lg">
-                <div className="flex justify-between text-sm text-[#d9e6d4]">
-                  <span>
-                    Page {currentBook.lastReadPage} sur {currentBook.totalPages}
-                  </span>
-                  <span>
-                    {Math.round(
-                      (currentBook.lastReadPage / currentBook.totalPages) * 100,
-                    )}{" "}
-                    %
-                  </span>
+                <p className="mt-2 text-sm text-[#c9d8c6]">
+                  {currentBook.author}
+                </p>
+                <div className="mt-8 max-w-md">
+                  <div className="mb-2 flex items-center justify-between text-xs text-[#dfead9]">
+                    <span>
+                      Page {currentBook.lastReadPage} sur{" "}
+                      {currentBook.totalPages}
+                    </span>
+                    <span className="font-bold text-[#d5ed8b]">
+                      {currentProgress}%
+                    </span>
+                  </div>
+                  <ReadingProgress value={currentProgress} />
                 </div>
-                <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/15">
-                  <div
-                    className="h-full rounded-full bg-[#e5b16a]"
-                    style={{
-                      width: `${Math.round((currentBook.lastReadPage / currentBook.totalPages) * 100)}%`,
-                    }}
-                  />
-                </div>
+                <Link
+                  href={`/dashboard/books/${currentBook.id}/read`}
+                  className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#d5ed8b] px-4 py-3 text-sm font-bold text-[#29402c] transition hover:bg-[#e3f4ad]"
+                >
+                  Reprendre la lecture
+                  <ArrowRight className="size-4" />
+                </Link>
               </div>
               <Link
                 href={`/dashboard/books/${currentBook.id}`}
-                className="mt-8 inline-flex w-fit items-center gap-2 rounded-xl bg-[#f5eddc] px-4 py-2.5 text-sm font-bold text-[#304b35] transition hover:bg-white"
+                className="group relative block w-28 shrink-0 overflow-hidden rounded-xl bg-[#1f3425] shadow-2xl ring-1 ring-white/15 sm:w-36"
               >
-                Voir le livre <ArrowRight className="size-4" />
+                <div className="relative aspect-[2/3]">
+                  {currentBook.coverUrl ? (
+                    <Image
+                      src={currentBook.coverUrl}
+                      alt={`Couverture de ${currentBook.title}`}
+                      fill
+                      className="object-cover transition duration-500 group-hover:scale-105"
+                      sizes="144px"
+                    />
+                  ) : (
+                    <span className="grid h-full place-items-center">
+                      <BookOpen className="size-8 text-white/40" />
+                    </span>
+                  )}
+                </div>
               </Link>
             </div>
-          </div>
-        </section>
-      ) : (
-        <EmptyState
-          icon={BookOpen}
-          title="Votre prochaine lecture vous attend"
-          description="Ajoutez un livre à votre bibliothèque pour commencer à suivre votre parcours."
-          action={
+          </article>
+        ) : (
+          <article className="rounded-[1.75rem] bg-[#2c4933] p-8 text-[#fbfbf3]">
+            <BookMarked className="size-9 text-[#d5ed8b]" />
+            <h2 className="mt-8 font-serif text-3xl">
+              Votre prochaine lecture vous attend.
+            </h2>
+            <p className="mt-3 max-w-md text-sm leading-6 text-[#c9d8c6]">
+              Ajoutez un livre, puis reprenez ici dès que vous êtes prêt à
+              commencer.
+            </p>
             <Link
               href="/dashboard/search"
-              className="inline-flex items-center gap-2 rounded-xl bg-[#314c35] px-4 py-2.5 text-sm font-semibold text-white"
+              className="mt-7 inline-flex items-center gap-2 rounded-xl bg-[#d5ed8b] px-4 py-3 text-sm font-bold text-[#29402c]"
             >
-              <Plus className="size-4" />
-              Ajouter un livre
+              Trouver un livre
+              <ArrowRight className="size-4" />
             </Link>
-          }
-        />
-      )}
-      <section>
-        <div className="mb-5 flex items-end justify-between gap-4">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#6b8164]">
-              À garder en vue
-            </p>
-            <h2 className="mt-2 font-serif text-3xl tracking-[-0.04em] text-[#273327]">
-              Vos lectures en cours
-            </h2>
+          </article>
+        )}
+        <aside className="rounded-[1.75rem] border border-[#dce4d7] bg-[#fffef9] p-6 shadow-[0_12px_32px_rgba(42,57,40,0.05)]">
+          <div className="flex items-center justify-between">
+            <span className="grid size-10 place-items-center rounded-xl bg-[#edf4e8] text-[#4f7049]">
+              <Target className="size-5" />
+            </span>
+            <span className="rounded-full bg-[#f2f5ed] px-3 py-1 text-xs font-bold text-[#62755e]">
+              Cette semaine
+            </span>
           </div>
-          <Link
-            href="/dashboard/books"
-            className="inline-flex items-center gap-1 text-sm font-semibold text-[#466346] hover:text-[#2c482e]"
+          <p className="mt-7 font-serif text-4xl tracking-[-0.05em] text-[#2c392b]">
+            {completedThisWeek}
+            <span className="ml-1 text-xl text-[#879283]">pages</span>
+          </p>
+          <p className="mt-1 text-sm text-[#6c786a]">
+            sur un objectif de {weeklyGoal} pages
+          </p>
+          <div className="mt-6 h-2 overflow-hidden rounded-full bg-[#e7ede3]">
+            <div
+              className="h-full rounded-full bg-[#6f9862]"
+              style={{ width: `${goalProgress}%` }}
+            />
+          </div>
+          <div className="mt-5 rounded-2xl bg-[#f3f6ef] p-4">
+            <p className="flex items-center gap-2 text-sm font-semibold text-[#3c533b]">
+              <Timer className="size-4 text-[#6f9862]" />
+              Un bel élan
+            </p>
+            <p className="mt-1 text-xs leading-5 text-[#71806e]">
+              Vous avez lu {completedThisWeek} pages cette semaine. Continuez
+              ainsi.
+            </p>
+          </div>
+        </aside>
+      </section>
+
+      <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        {[
+          {
+            label: "Dans la bibliothèque",
+            value: fakeStatsOverview.totalBooks,
+            icon: Library,
+            tone: "bg-[#edf4e8] text-[#54784c]",
+          },
+          {
+            label: "Lectures en cours",
+            value: fakeStatsOverview.booksInProgress,
+            icon: BookOpen,
+            tone: "bg-[#eef0e6] text-[#70804d]",
+          },
+          {
+            label: "Livres terminés",
+            value: fakeStatsOverview.booksFinished,
+            icon: CircleCheck,
+            tone: "bg-[#f3ece3] text-[#9a7044]",
+          },
+          {
+            label: "Pages lues",
+            value: fakeStatsOverview.totalPagesRead.toLocaleString(),
+            icon: BookMarked,
+            tone: "bg-[#e8f0ed] text-[#4c7868]",
+          },
+        ].map(({ label, value, icon: Icon, tone }) => (
+          <article
+            key={label}
+            className="flex items-center gap-4 rounded-2xl border border-[#dfe5da] bg-[#fffef9] px-4 py-4 transition hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(42,57,40,0.06)]"
           >
-            Voir la bibliothèque <ArrowRight className="size-4" />
-          </Link>
+            <span
+              className={`grid size-10 place-items-center rounded-xl ${tone}`}
+            >
+              <Icon className="size-[18px]" />
+            </span>
+            <div>
+              <p className="font-serif text-2xl tracking-[-0.04em] text-[#2d392c]">
+                {value}
+              </p>
+              <p className="text-xs text-[#788476]">{label}</p>
+            </div>
+          </article>
+        ))}
+      </section>
+
+      <section className="grid gap-5 xl:grid-cols-[minmax(0,1.45fr)_minmax(18rem,0.85fr)]">
+        <div className="rounded-[1.75rem] border border-[#dce4d7] bg-[#fffef9] p-5 shadow-[0_12px_32px_rgba(42,57,40,0.04)] sm:p-6">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#7d9277]">
+                Sur votre étagère
+              </p>
+              <h2 className="mt-1 font-serif text-2xl tracking-[-0.035em] text-[#293629]">
+                À continuer
+              </h2>
+            </div>
+            <Link
+              href="/dashboard/books"
+              className="inline-flex items-center gap-1 text-sm font-semibold text-[#476246] hover:text-[#2d4a32]"
+            >
+              Tout voir <ChevronRight className="size-4" />
+            </Link>
+          </div>
+          {shelfBooks.length > 0 ? (
+            <div className="mt-6 grid gap-3 md:grid-cols-3">
+              {shelfBooks.map((book) => {
+                const progress = book.totalPages
+                  ? Math.round((book.lastReadPage / book.totalPages) * 100)
+                  : 0;
+                return (
+                  <Link
+                    key={book.id}
+                    href={`/dashboard/books/${book.id}`}
+                    className="group flex min-w-0 gap-3 rounded-2xl p-2 transition hover:bg-[#f4f7f1]"
+                  >
+                    <div className="relative h-28 w-20 shrink-0 overflow-hidden rounded-lg bg-[#edf2ea] shadow-sm">
+                      {book.coverUrl ? (
+                        <Image
+                          src={book.coverUrl}
+                          alt={`Couverture de ${book.title}`}
+                          fill
+                          className="object-cover transition duration-500 group-hover:scale-105"
+                          sizes="80px"
+                        />
+                      ) : (
+                        <BookOpen className="m-auto mt-10 size-5 text-[#8b9c86]" />
+                      )}
+                    </div>
+                    <div className="min-w-0 py-1">
+                      <p className="truncate text-sm font-bold text-[#314030]">
+                        {book.title}
+                      </p>
+                      <p className="mt-1 truncate text-xs text-[#7a8578]">
+                        {book.author}
+                      </p>
+                      <div className="mt-5 h-1.5 overflow-hidden rounded-full bg-[#e5ebe1]">
+                        <div
+                          className="h-full rounded-full bg-[#73976a]"
+                          style={{ width: `${progress}%` }}
+                        />
+                      </div>
+                      <p className="mt-1.5 text-xs font-semibold text-[#5e7c58]">
+                        {progress}% terminé
+                      </p>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="mt-6 rounded-2xl bg-[#f4f7f1] p-7 text-center">
+              <BookOpen className="mx-auto size-7 text-[#8aa184]" />
+              <p className="mt-3 text-sm font-semibold text-[#40513e]">
+                Une seule lecture en cours
+              </p>
+              <p className="mt-1 text-xs text-[#788576]">
+                Quand vous commencerez un autre livre, il apparaîtra ici.
+              </p>
+            </div>
+          )}
         </div>
-        {inProgress.length > 0 ? (
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            {inProgress.slice(0, 4).map((book) => {
-              const progress = book.totalPages
-                ? Math.round((book.lastReadPage / book.totalPages) * 100)
-                : 0;
+        <aside className="rounded-[1.75rem] border border-[#dce4d7] bg-[#fffef9] p-6 shadow-[0_12px_32px_rgba(42,57,40,0.04)]">
+          <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#7d9277]">
+            Votre rythme
+          </p>
+          <h2 className="mt-1 font-serif text-2xl tracking-[-0.035em] text-[#293629]">
+            Activité récente
+          </h2>
+          <div className="mt-7 flex h-24 items-end gap-2">
+            {fakeStatsProgress.slice(-7).map((day, index) => {
+              const height = Math.max(
+                12,
+                Math.round((day.pagesRead / 70) * 100),
+              );
               return (
-                <Link
-                  key={book.id}
-                  href={`/dashboard/books/${book.id}`}
-                  className="group rounded-2xl border border-[#e0e4db] bg-[#fffef9] p-4 transition hover:-translate-y-1 hover:shadow-[0_14px_30px_rgba(42,57,40,0.08)]"
+                <div
+                  key={day.date}
+                  className="flex h-full flex-1 flex-col justify-end gap-2"
                 >
-                  <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-[#edf2e9]">
-                    {book.coverUrl ? (
-                      <Image
-                        src={book.coverUrl}
-                        alt={book.title}
-                        fill
-                        className="object-cover transition duration-500 group-hover:scale-105"
-                      />
-                    ) : (
-                      <BookOpen className="absolute inset-0 m-auto size-8 text-[#789071]" />
-                    )}
-                  </div>
-                  <p className="mt-4 truncate font-serif text-xl text-[#2a3529]">
-                    {book.title}
-                  </p>
-                  <p className="mt-1 truncate text-sm text-[#70806e]">
-                    {book.author}
-                  </p>
-                  <div className="mt-5 h-1.5 overflow-hidden rounded-full bg-[#e8eee3]">
-                    <div
-                      className="h-full rounded-full bg-[#5d8157]"
-                      style={{ width: `${progress}%` }}
-                    />
-                  </div>
-                  <div className="mt-2 flex justify-between text-xs text-[#7b8879]">
-                    <span>p. {book.lastReadPage}</span>
-                    <span>{progress} %</span>
-                  </div>
-                </Link>
+                  <div
+                    className={`rounded-t-md ${index === 6 ? "bg-[#3e6440]" : "bg-[#c8dbbd]"}`}
+                    style={{ height: `${height}%` }}
+                    title={`${day.pagesRead} pages`}
+                  />
+                  <span className="text-center text-[10px] font-semibold text-[#899487]">
+                    {["L", "M", "M", "J", "V", "S", "D"][index]}
+                  </span>
+                </div>
               );
             })}
           </div>
-        ) : null}
+          <div className="mt-7 flex items-center justify-between border-t border-[#e4e9df] pt-5">
+            <div>
+              <p className="text-sm font-semibold text-[#3d513b]">
+                {fakeStatsOverview.totalSessions} sessions
+              </p>
+              <p className="text-xs text-[#7d897a]">depuis le début</p>
+            </div>
+            <Link
+              href="/dashboard/stats"
+              className="rounded-xl bg-[#f0f5ec] px-3 py-2 text-xs font-bold text-[#496649] transition hover:bg-[#e2ebdc]"
+            >
+              Voir les statistiques
+            </Link>
+          </div>
+        </aside>
       </section>
     </div>
   );

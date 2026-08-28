@@ -9,8 +9,6 @@ import {
   Download,
   Plus,
   Check,
-  ChevronDown,
-  X,
   Loader2,
   CheckCircle2,
   ArrowRight,
@@ -18,6 +16,8 @@ import {
 import { fakeExternalSearchResults, fakeGenres } from "@/lib/fake-data";
 import { useBookStore } from "@/lib/book-store";
 import { ApiDocsCard } from "@/components/api-docs-card";
+import { PageHeader } from "@/components/shared/page-header";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 interface ExternalBook {
   title: string;
@@ -174,19 +174,16 @@ export default function SearchPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-text-primary">
-          Rechercher un livre
-        </h1>
-        <p className="text-text-secondary">
-          Trouvez et importez des livres depuis Open Library et Google Books
-        </p>
-      </div>
+      <PageHeader
+        eyebrow="Enrichir votre bibliothèque"
+        title="Trouver un livre"
+        description="Recherchez une référence, importez-la, ou ajoutez-la à la main."
+      />
 
       {/* Success toast */}
       {importSuccess && (
         <div className="glass-strong rounded-xl p-4 flex items-center gap-3 border-l-4 border-l-success animate-fade-in-up">
-          <CheckCircle2 className="w-5 h-5 text-success flex-shrink-0" />
+          <CheckCircle2 className="w-5 h-5 text-success shrink-0" />
           <div className="flex-1">
             <p className="text-sm font-semibold text-text-primary">
               « {importSuccess.title} » ajouté !
@@ -244,12 +241,13 @@ export default function SearchPage() {
       </button>
 
       {/* Manual add form */}
-      {manualMode && (
-        <div className="glass-strong rounded-2xl p-6 animate-fade-in-up">
-          <h2 className="text-lg font-bold text-text-primary mb-4">
-            Ajouter un livre manuellement
-          </h2>
-          <form onSubmit={handleManualAdd} className="space-y-4">
+      <Dialog open={manualMode} onOpenChange={setManualMode}>
+        <DialogContent className="max-h-[calc(100vh-1rem)] max-w-[calc(100%-1rem)] overflow-y-auto rounded-[1.75rem] border-[#dce4d7] bg-[#fffef9] p-6 shadow-[0_20px_50px_rgba(42,57,40,0.16)] sm:!max-w-3xl sm:p-8">
+          <DialogHeader>
+            <DialogTitle className="font-serif text-2xl text-[#2b382b]">Ajouter un livre manuellement</DialogTitle>
+            <DialogDescription>Renseignez les informations dont vous disposez. Vous pourrez les compléter plus tard.</DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleManualAdd} className="space-y-4 pt-2">
             <div className="grid sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-semibold text-text-secondary mb-1">
@@ -384,24 +382,24 @@ export default function SearchPage() {
                 className="w-full px-4 py-2.5 rounded-xl bg-surface border border-border text-sm font-medium text-text-primary transition-all resize-none"
               />
             </div>
-            <div className="flex gap-3">
+            <div className="flex flex-col-reverse justify-center gap-3 pt-2 sm:flex-row">
               <button
                 type="submit"
-                className="btn-primary text-sm px-6 py-2.5 flex items-center gap-2"
+                className="inline-flex min-w-40 items-center justify-center gap-2 rounded-xl bg-[#314c35] px-6 py-3 text-sm font-semibold text-white shadow-[0_8px_18px_rgba(49,76,53,0.16)] transition hover:bg-[#263e2a]"
               >
                 <Plus className="w-4 h-4" /> Ajouter
               </button>
               <button
                 type="button"
                 onClick={() => setManualMode(false)}
-                className="btn-secondary text-sm px-6 py-2.5"
+                className="inline-flex min-w-32 items-center justify-center rounded-xl border border-[#d7dfd2] bg-[#fffef9] px-6 py-3 text-sm font-semibold text-[#40523f] transition hover:border-[#afc4a7] hover:bg-[#f3f7f0]"
               >
                 Annuler
               </button>
             </div>
           </form>
-        </div>
-      )}
+        </DialogContent>
+      </Dialog>
 
       {/* Results */}
       {results.length > 0 && (
