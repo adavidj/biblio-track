@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { fakeGenres } from "@/lib/fake-data";
 import { ApiDocsCard } from "@/components/api-docs-card";
+import { PageHeader } from "@/components/shared/page-header";
 
 interface Genre {
   id: string;
@@ -66,12 +67,7 @@ export default function GenresPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-text-primary">Genres</h1>
-        <p className="text-text-secondary">
-          Gérez les genres de votre bibliothèque
-        </p>
-      </div>
+      <PageHeader eyebrow="Organisation" title="Vos genres" description="Créez des repères simples pour mieux parcourir votre bibliothèque." />
 
       {/* Create form */}
       <div className="glass-strong rounded-2xl p-5">

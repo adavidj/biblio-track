@@ -44,6 +44,8 @@ export function ApiDocsCard({ title, subtitle, endpoints }: ApiDocsCardProps) {
   const [expanded, setExpanded] = useState(false);
   const [openEndpoint, setOpenEndpoint] = useState<number | null>(null);
 
+  if (process.env.NODE_ENV === "production") return null;
+
   return (
     <div className="glass-strong rounded-2xl border border-[#4A6FA5]/5 overflow-hidden">
       {/* Header */}

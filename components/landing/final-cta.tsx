@@ -1,6 +1,31 @@
 import Link from "next/link";
 import { ArrowRight, Check } from "lucide-react";
 
+import { Reveal } from "./reveal";
+
 export function FinalCTA() {
-  return <section className="bg-[#2f4b35] px-6 py-20 text-[#fbf7ed] sm:px-8"><div className="mx-auto max-w-3xl text-center"><h2 className="font-serif text-4xl leading-none tracking-[-0.04em] sm:text-5xl">Votre prochaine lecture mérite déjà sa place.</h2><p className="mx-auto mt-6 max-w-xl leading-7 text-[#d9e1d3]">Commencez avec un livre. Le reste de votre bibliothèque suivra naturellement.</p><Link href="/auth/register" className="mt-9 inline-flex items-center gap-2 rounded-full bg-[#f2e8d5] px-6 py-3.5 text-sm font-bold text-[#29412f] transition hover:-translate-y-0.5 hover:bg-white">Créer ma bibliothèque <ArrowRight className="size-4" aria-hidden="true" /></Link><p className="mt-7 inline-flex items-center gap-2 text-xs text-[#c6d4be]"><Check className="size-3.5" aria-hidden="true" /> Sans carte bancaire · Prêt en quelques secondes</p></div></section>;
+  return (
+    <section className="bg-[#f0dfbd] px-6 py-24 sm:px-8">
+      <Reveal className="mx-auto max-w-4xl text-center">
+        <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#8a4d35]">Votre bibliothèque commence maintenant</p>
+        <h2 className="mt-5 font-serif text-4xl leading-none tracking-[-0.05em] text-[#193b2b] sm:text-6xl">
+          Le prochain livre est déjà une bonne raison de commencer.
+        </h2>
+        <p className="mx-auto mt-6 max-w-xl leading-7 text-[#4c594e]">
+          Créez votre espace, ajoutez un livre et laissez votre parcours se dessiner naturellement.
+        </p>
+        <Link
+          className="mt-9 inline-flex items-center gap-2 rounded-full bg-[#193b2b] px-6 py-3.5 text-sm font-bold text-[#f8f1df] shadow-[0_12px_25px_rgba(25,59,43,0.18)] transition-transform hover:-translate-y-0.5 hover:bg-[#28523c]"
+          href="/auth/register"
+        >
+          Créer mon compte gratuitement
+          <ArrowRight aria-hidden="true" className="size-4" />
+        </Link>
+        <p className="mt-7 inline-flex items-center gap-2 text-xs font-medium text-[#536252]">
+          <Check aria-hidden="true" className="size-3.5" />
+          Sans carte bancaire · Prêt en quelques secondes
+        </p>
+      </Reveal>
+    </section>
+  );
 }
