@@ -86,7 +86,7 @@ export default function ForgotPasswordPage() {
                 "
               >
                 <BookOpen
-                  className="h-[18px] w-[18px] text-white sm:h-5 sm:w-5"
+                  className="h-4.5 w-4.5 text-white sm:h-5 sm:w-5"
                   strokeWidth={1.8}
                 />
               </div>
@@ -111,7 +111,7 @@ export default function ForgotPasswordPage() {
               CONTENT
           ===================================================== */}
           <div className="flex flex-1 items-center py-12 sm:py-14 lg:py-10">
-            <div className="w-full max-w-[500px]">
+            <div className="w-full max-w-125">
 
               {!success ? (
                 <>
@@ -144,7 +144,7 @@ export default function ForgotPasswordPage() {
 
                     <h1
                       className="
-                        max-w-[500px]
+                        max-w-125
                         font-serif
                         font-normal
                         leading-[0.98]
@@ -159,15 +159,15 @@ export default function ForgotPasswordPage() {
                     <p
                       className="
                         mt-5
-                        max-w-[460px]
+                        max-w-115
                         text-[clamp(0.85rem,1.15vw,1rem)]
                         leading-7
                         text-[#6b6b64]
                       "
                     >
-                      Entrez l'adresse e-mail associée à votre compte.
-                      Nous vous enverrons un code pour créer un nouveau
-                      mot de passe.
+                      Entrez l&apos;adresse e-mail associée à votre compte.
+                      Nous vous enverrons un lien sécurisé pour choisir un
+                      nouveau mot de passe.
                     </p>
                   </div>
 
@@ -198,8 +198,8 @@ export default function ForgotPasswordPage() {
                             absolute
                             left-4
                             top-1/2
-                            h-[17px]
-                            w-[17px]
+                            h-4.25
+                            w-4.25
                             -translate-y-1/2
                             text-[#9b9990]
                           "
@@ -230,7 +230,7 @@ export default function ForgotPasswordPage() {
                             placeholder:text-[#aaa79e]
                             focus:border-[#aaa69b]
                             focus:ring-4
-                            focus:ring-[#1a1a1a]/[0.04]
+                            focus:ring-[#1a1a1a]/4
                             sm:pr-5
                             sm:text-[14px]
                           "
@@ -269,10 +269,10 @@ export default function ForgotPasswordPage() {
                       {loading ? (
                         <>
                           <Loader2 className="h-4 w-4 animate-spin" />
-                          Envoi du code...
+                          Envoi du lien...
                         </>
                       ) : (
-                        "Envoyer le code de réinitialisation"
+                        "Envoyer le lien de réinitialisation"
                       )}
                     </button>
                   </form>
@@ -312,7 +312,7 @@ export default function ForgotPasswordPage() {
                     className="
                       mx-auto
                       mt-5
-                      max-w-[430px]
+                      max-w-107.5
                       px-2
                       text-center
                       text-[10.5px]
@@ -351,7 +351,7 @@ export default function ForgotPasswordPage() {
                         sm:text-xs
                       "
                     >
-                      Vérification
+                      E-mail envoyé
                     </p>
 
                     <div
@@ -374,7 +374,7 @@ export default function ForgotPasswordPage() {
 
                     <h1
                       className="
-                        max-w-[500px]
+                        max-w-125
                         font-serif
                         font-normal
                         leading-[0.98]
@@ -389,7 +389,7 @@ export default function ForgotPasswordPage() {
                     <p
                       className="
                         mt-5
-                        max-w-[460px]
+                        max-w-115
                         text-[clamp(0.85rem,1.15vw,1rem)]
                         leading-7
                         text-[#6b6b64]
@@ -399,13 +399,14 @@ export default function ForgotPasswordPage() {
                       <strong className="font-semibold text-[#33332f]">
                         {email}
                       </strong>
-                      , nous venons de vous envoyer un code de
-                      réinitialisation.
+                      , nous venons de vous envoyer un lien sécurisé pour
+                      réinitialiser votre mot de passe. Ouvrez-le pour choisir
+                      un nouveau mot de passe.
                     </p>
                   </div>
 
                   <Link
-                    href={`/auth/reset-password?email=${encodeURIComponent(email)}`}
+                    href="/auth/login"
                     className="
                       inline-flex
                       h-[clamp(45px,3.4vw,52px)]
@@ -426,7 +427,7 @@ export default function ForgotPasswordPage() {
                       sm:text-[14px]
                     "
                   >
-                    Entrer le code de réinitialisation
+                    Retourner à la connexion
                   </Link>
 
                   <p
@@ -476,7 +477,7 @@ export default function ForgotPasswordPage() {
               relative
               aspect-[0.82/1]
               w-full
-              max-w-[520px]
+              max-w-130
               overflow-hidden
               rounded-[1.4rem]
               border

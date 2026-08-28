@@ -29,8 +29,8 @@ export default function AuthPage() {
         password,
       });
 
-      // Identifiants corrects → Dashboard
-      router.push("/dashboard");
+      // Identifiants corrects → vérification OTP envoyée par le serveur
+      router.push(`/auth/verify?email=${encodeURIComponent(email)}`);
     } catch (err: unknown) {
       const apiError = err as {
         message?: string;
@@ -163,7 +163,7 @@ export default function AuthPage() {
                   "
                 >
                   Retrouvez vos lectures, suivez votre progression et
-                  reprenez chaque livre exactement là où vous l'avez laissé.
+                  reprenez chaque livre exactement là où vous l&apos;avez laissé.
                 </p>
               </div>
 
@@ -406,7 +406,7 @@ export default function AuthPage() {
                   sm:text-[13px]
                 "
               >
-                Vous n'avez pas encore de compte ?{" "}
+                Vous n&apos;avez pas encore de compte ?{" "}
                 <Link
                   href="/auth/register"
                   className="
@@ -442,7 +442,7 @@ export default function AuthPage() {
                   href="#"
                   className="text-[#77746c] underline underline-offset-2"
                 >
-                  conditions d'utilisation
+                  conditions d&apos;utilisation
                 </Link>{" "}
                 et la{" "}
                 <Link
