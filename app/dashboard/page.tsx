@@ -18,7 +18,9 @@ import { ApiDocsCard } from "@/components/api-docs-card";
 
 export default function DashboardPage() {
   const { books } = useBookStore();
-  const recentBooks = books.filter((b) => b.status === "IN_PROGRESS").slice(0, 4);
+  const recentBooks = books
+    .filter((b) => b.status === "IN_PROGRESS")
+    .slice(0, 4);
 
   const statCards = [
     {
@@ -66,8 +68,13 @@ export default function DashboardPage() {
       {/* Stats cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {statCards.map((card) => (
-          <div key={card.label} className="glass-strong rounded-2xl p-6 card-hover">
-            <div className={`w-10 h-10 rounded-xl bg-linear-to-br ${card.color} flex items-center justify-center mb-3`}>
+          <div
+            key={card.label}
+            className="glass-strong rounded-2xl p-6 card-hover"
+          >
+            <div
+              className={`w-10 h-10 rounded-xl bg-linear-to-br ${card.color} flex items-center justify-center mb-3`}
+            >
               <card.icon className={`w-5 h-5 ${card.iconColor}`} />
             </div>
             <p className="text-2xl font-bold text-text-primary">{card.value}</p>
@@ -168,7 +175,9 @@ export default function DashboardPage() {
                     <span>
                       p. {book.lastReadPage} / {book.totalPages}
                     </span>
-                    <span className="font-semibold text-primary">{progress}%</span>
+                    <span className="font-semibold text-primary">
+                      {progress}%
+                    </span>
                   </div>
                 </Link>
               );
@@ -186,14 +195,51 @@ export default function DashboardPage() {
             path: "/books?status=IN_PROGRESS",
             description: "Livres en cours",
             when: "Au chargement du dashboard pour afficher les livres en cours de lecture",
-            response: JSON.stringify({ success: true, message: "Request completed successfully", data: { data: [{ id: "uuid", title: "Les Misérables", author: "Victor Hugo", coverUrl: "https://...", status: "IN_PROGRESS", lastReadPage: 42, totalPages: 1900, genre: { id: "uuid", name: "Roman" } }], meta: { total: 3, page: 1, limit: 20, totalPages: 1 } } }, null, 2),
+            response: JSON.stringify(
+              {
+                success: true,
+                message: "Request completed successfully",
+                data: {
+                  data: [
+                    {
+                      id: "uuid",
+                      title: "Les Misérables",
+                      author: "Victor Hugo",
+                      coverUrl: "https://...",
+                      status: "IN_PROGRESS",
+                      lastReadPage: 42,
+                      totalPages: 1900,
+                      genre: { id: "uuid", name: "Roman" },
+                    },
+                  ],
+                  meta: { total: 3, page: 1, limit: 20, totalPages: 1 },
+                },
+              },
+              null,
+              2,
+            ),
           },
           {
             method: "GET",
             path: "/stats/overview",
             description: "Statistiques globales",
             when: "Au chargement du dashboard pour afficher les 4 cartes stats (total, en cours, terminés, pages lues)",
-            response: JSON.stringify({ success: true, message: "Request completed successfully", data: { totalBooks: 12, booksFinished: 5, booksInProgress: 3, booksToRead: 4, totalPagesRead: 1250, totalSessions: 45 } }, null, 2),
+            response: JSON.stringify(
+              {
+                success: true,
+                message: "Request completed successfully",
+                data: {
+                  totalBooks: 12,
+                  booksFinished: 5,
+                  booksInProgress: 3,
+                  booksToRead: 4,
+                  totalPagesRead: 1250,
+                  totalSessions: 45,
+                },
+              },
+              null,
+              2,
+            ),
           },
         ]}
       />
