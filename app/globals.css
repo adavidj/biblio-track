@@ -343,3 +343,85 @@ input:focus, select:focus, textarea:focus {
     @apply font-sans;
   }
 }
+
+.dashboard-shell {
+  --primary: #314c35;
+  --primary-light: #d9e6d4;
+  --primary-dark: #223a27;
+  --accent: #e8efe3;
+  --accent-light: #d9e4d3;
+  --surface: rgba(255, 254, 249, 0.78);
+  --surface-solid: #fffef9;
+  --surface-hover: #f4f7f0;
+  --border: #dce2d8;
+  --border-strong: #c8d4c2;
+  --text-primary: #273326;
+  --text-secondary: #667263;
+  --text-muted: #899487;
+  --success: #4f8a61;
+  --warning: #b98238;
+  --danger: #ba5a54;
+  --info: #638673;
+  --background: #f5f7f2;
+  --foreground: #273326;
+  --card: #fffef9;
+  --card-foreground: #273326;
+  --popover: #fffef9;
+  --popover-foreground: #273326;
+  --muted: #f0f4ed;
+  --muted-foreground: #71806e;
+  --input: #d7dfd2;
+  --destructive: #ba5a54;
+  background: #f5f7f2;
+}
+
+/* Dashboard visual system: existing feature pages keep their interactions,
+   while these primitives give them the same editorial SaaS language. */
+.dashboard-shell .glass-strong {
+  background: #fffef9;
+  border-color: #dce4d7;
+  box-shadow: 0 12px 32px rgba(42, 57, 40, 0.045);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.dashboard-shell .card-hover:hover {
+  box-shadow: 0 18px 36px rgba(42, 57, 40, 0.09);
+}
+
+.dashboard-shell .btn-primary {
+  background: #314c35;
+  border-radius: 0.75rem;
+  box-shadow: 0 8px 18px rgba(49, 76, 53, 0.15);
+}
+
+.dashboard-shell .btn-primary:hover { background: #263e2a; }
+
+.dashboard-shell .btn-secondary {
+  background: #fffef9;
+  border-color: #d7dfd2;
+  border-radius: 0.75rem;
+  color: #40523f;
+}
+
+.dashboard-shell .btn-secondary:hover {
+  background: #f3f7f0;
+  border-color: #afc4a7;
+}
+
+.dashboard-shell .gradient-text {
+  background: none;
+  -webkit-text-fill-color: #3f7048;
+  color: #3f7048;
+}
+
+.dashboard-shell .badge-to-read { background: #edf2e9; color: #61765b; }
+.dashboard-shell .badge-in-progress { background: #dcebd4; color: #3f6942; }
+.dashboard-shell .badge-finished { background: #e7f2e9; color: #4b7d58; }
+
+.dashboard-shell input:focus,
+.dashboard-shell select:focus,
+.dashboard-shell textarea:focus {
+  border-color: #6c9561 !important;
+  box-shadow: 0 0 0 3px rgba(108, 149, 97, 0.14);
+}

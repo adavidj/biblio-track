@@ -37,12 +37,6 @@ const STATUS_LABELS: Record<string, string> = {
   FINISHED: "Terminé",
 };
 
-const STATUS_VARIANT: Record<string, "default" | "secondary" | "outline" | "destructive"> = {
-  TO_READ: "secondary",
-  IN_PROGRESS: "default",
-  FINISHED: "outline",
-};
-
 export default function BookDetailPage() {
   const params = useParams();
   const bookId = params.id as string;
