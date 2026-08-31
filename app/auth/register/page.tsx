@@ -1,17 +1,8 @@
-
 "use client";
 
 import { useState } from "react";
 import Link from "next/link";
-import {
-  BookOpen,
-  Mail,
-  Lock,
-  User,
-  Eye,
-  EyeOff,
-  Loader2,
-} from "lucide-react";
+import { BookOpen, Mail, Lock, User, Eye, EyeOff, Loader2 } from "lucide-react";
 import { authApi } from "@/lib/api";
 
 export default function RegisterPage() {
@@ -43,8 +34,7 @@ export default function RegisterPage() {
       }
     } catch (err: unknown) {
       const msg =
-        (err as { message?: string }).message ||
-        "Erreur lors de l'inscription";
+        (err as { message?: string }).message || "Erreur lors de l'inscription";
 
       setError(msg);
     } finally {
@@ -104,7 +94,7 @@ export default function RegisterPage() {
                   "
                 >
                   <BookOpen
-                    className="h-[18px] w-[18px] text-white sm:h-5 sm:w-5"
+                    className="h-4.5 w-4.5 text-white sm:h-5 sm:w-5"
                     strokeWidth={1.8}
                   />
                 </div>
@@ -127,7 +117,7 @@ export default function RegisterPage() {
 
             {/* Success content */}
             <div className="flex flex-1 items-center py-12 sm:py-14 lg:py-10">
-              <div className="w-full max-w-[500px]">
+              <div className="w-full max-w-125">
                 <div className="mb-8">
                   <div
                     className="
@@ -149,12 +139,12 @@ export default function RegisterPage() {
 
                   <h1
                     className="
-                      max-w-[500px]
+                      max-w-125
                       font-serif
                       text-[clamp(1.8rem,3vw,2.6rem)]
                       font-normal
                       leading-[1.1]
-                      tracking-[-0.025em]
+                      tracking-tight
                       text-[#1a1a1a]
                     "
                   >
@@ -164,7 +154,7 @@ export default function RegisterPage() {
                   <p
                     className="
                       mt-4
-                      max-w-[460px]
+                      max-w-115
                       text-[clamp(0.8rem,1.15vw,0.95rem)]
                       leading-6
                       text-[#6b6b64]
@@ -246,7 +236,7 @@ export default function RegisterPage() {
                 relative
                 aspect-[0.82/1]
                 w-full
-                max-w-[520px]
+                max-w-130
                 overflow-hidden
                 rounded-[1.4rem]
                 border
@@ -263,10 +253,7 @@ export default function RegisterPage() {
                 playsInline
                 preload="auto"
               >
-                <source
-                  src="/videos/auth/auth-video.mp4"
-                  type="video/mp4"
-                />
+                <source src="/videos/auth/auth-video.mp4" type="video/mp4" />
               </video>
             </div>
           </section>
@@ -300,7 +287,6 @@ export default function RegisterPage() {
             LEFT — REGISTER
         ===================================================== */}
         <section className="flex min-h-screen w-full flex-col lg:min-h-0">
-
           {/* ===================================================
               LOGO
           =================================================== */}
@@ -331,7 +317,7 @@ export default function RegisterPage() {
                 "
               >
                 <BookOpen
-                  className="h-[18px] w-[18px] text-white sm:h-5 sm:w-5"
+                  className="h-4.5 w-4.5 text-white sm:h-5 sm:w-5"
                   strokeWidth={1.8}
                 />
               </div>
@@ -356,18 +342,17 @@ export default function RegisterPage() {
               REGISTER CONTENT
           =================================================== */}
           <div className="flex flex-1 items-center py-10 sm:py-12 lg:py-8">
-            <div className="w-full max-w-[500px]">
-
+            <div className="w-full max-w-125">
               {/* HEADING */}
               <div className="mb-7 sm:mb-8">
                 <h1
                   className="
-                    max-w-[500px]
+                    max-w-125
                     font-serif
                     text-[clamp(1.75rem,3vw,2.6rem)]
                     font-normal
                     leading-[1.1]
-                    tracking-[-0.025em]
+                    tracking-tight
                     text-[#1a1a1a]
                   "
                 >
@@ -377,14 +362,14 @@ export default function RegisterPage() {
                 <p
                   className="
                     mt-3
-                    max-w-[460px]
+                    max-w-115
                     text-[clamp(0.8rem,1.15vw,0.95rem)]
                     leading-6
                     text-[#6b6b64]
                   "
                 >
-                  Commencez à organiser vos lectures, suivre votre
-                  progression et construire votre bibliothèque personnelle.
+                  Commencez à organiser vos lectures, suivre votre progression
+                  et construire votre bibliothèque personnelle.
                 </p>
               </div>
 
@@ -412,14 +397,9 @@ export default function RegisterPage() {
               {/* =================================================
                   FORM
               ================================================= */}
-              <form
-                onSubmit={handleSubmit}
-                className="w-full space-y-4"
-              >
-
+              <form onSubmit={handleSubmit} className="w-full space-y-4">
                 {/* FIRST NAME + LAST NAME */}
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-
                   {/* FIRST NAME */}
                   <div className="space-y-2">
                     <label
@@ -453,9 +433,7 @@ export default function RegisterPage() {
                         id="firstName"
                         type="text"
                         value={firstName}
-                        onChange={(e) =>
-                          setFirstName(e.target.value)
-                        }
+                        onChange={(e) => setFirstName(e.target.value)}
                         placeholder="Jean"
                         autoComplete="given-name"
                         required
@@ -475,7 +453,7 @@ export default function RegisterPage() {
                           placeholder:text-[#aaa79e]
                           focus:border-[#aaa69b]
                           focus:ring-4
-                          focus:ring-[#1a1a1a]/[0.04]
+                          focus:ring-[#1a1a1a]/4
                           sm:text-[14px]
                         "
                       />
@@ -515,9 +493,7 @@ export default function RegisterPage() {
                         id="lastName"
                         type="text"
                         value={lastName}
-                        onChange={(e) =>
-                          setLastName(e.target.value)
-                        }
+                        onChange={(e) => setLastName(e.target.value)}
                         placeholder="Dupont"
                         autoComplete="family-name"
                         required
@@ -537,7 +513,7 @@ export default function RegisterPage() {
                           placeholder:text-[#aaa79e]
                           focus:border-[#aaa69b]
                           focus:ring-4
-                          focus:ring-[#1a1a1a]/[0.04]
+                          focus:ring-[#1a1a1a]/4
                           sm:text-[14px]
                         "
                       />
@@ -598,7 +574,7 @@ export default function RegisterPage() {
                         placeholder:text-[#aaa79e]
                         focus:border-[#aaa69b]
                         focus:ring-4
-                        focus:ring-[#1a1a1a]/[0.04]
+                        focus:ring-[#1a1a1a]/4
                         sm:px-5
                         sm:pl-10
                         sm:text-[14px]
@@ -640,9 +616,7 @@ export default function RegisterPage() {
                       id="password"
                       type={showPassword ? "text" : "password"}
                       value={password}
-                      onChange={(e) =>
-                        setPassword(e.target.value)
-                      }
+                      onChange={(e) => setPassword(e.target.value)}
                       placeholder="Min. 8 caractères"
                       autoComplete="new-password"
                       required
@@ -664,7 +638,7 @@ export default function RegisterPage() {
                         placeholder:text-[#aaa79e]
                         focus:border-[#aaa69b]
                         focus:ring-4
-                        focus:ring-[#1a1a1a]/[0.04]
+                        focus:ring-[#1a1a1a]/4
                         sm:px-5
                         sm:pl-10
                         sm:pr-12
@@ -674,9 +648,7 @@ export default function RegisterPage() {
 
                     <button
                       type="button"
-                      onClick={() =>
-                        setShowPassword((value) => !value)
-                      }
+                      onClick={() => setShowPassword((value) => !value)}
                       aria-label={
                         showPassword
                           ? "Masquer le mot de passe"
@@ -695,15 +667,9 @@ export default function RegisterPage() {
                       "
                     >
                       {showPassword ? (
-                        <EyeOff
-                          size={17}
-                          strokeWidth={1.7}
-                        />
+                        <EyeOff size={17} strokeWidth={1.7} />
                       ) : (
-                        <Eye
-                          size={17}
-                          strokeWidth={1.7}
-                        />
+                        <Eye size={17} strokeWidth={1.7} />
                       )}
                     </button>
                   </div>
@@ -783,7 +749,7 @@ export default function RegisterPage() {
                 className="
                   mx-auto
                   mt-5
-                  max-w-[430px]
+                  max-w-107.5
                   px-2
                   text-center
                   text-[10.5px]
@@ -798,7 +764,7 @@ export default function RegisterPage() {
                   href="#"
                   className="text-[#77746c] underline underline-offset-2"
                 >
-                  conditions d'utilisation
+                  conditions d&apos;utilisation
                 </Link>{" "}
                 et la{" "}
                 <Link
@@ -830,7 +796,7 @@ export default function RegisterPage() {
               relative
               aspect-[0.82/1]
               w-full
-              max-w-[520px]
+              max-w-130
               overflow-hidden
               rounded-[1.4rem]
               border
@@ -853,10 +819,7 @@ export default function RegisterPage() {
               playsInline
               preload="auto"
             >
-              <source
-                src="/videos/auth/auth-video.mp4"
-                type="video/mp4"
-              />
+              <source src="/videos/auth/auth-video.mp4" type="video/mp4" />
             </video>
           </div>
         </section>
