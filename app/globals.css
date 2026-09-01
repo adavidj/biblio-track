@@ -425,3 +425,15 @@ input:focus, select:focus, textarea:focus {
   border-color: #6c9561 !important;
   box-shadow: 0 0 0 3px rgba(108, 149, 97, 0.14);
 }
+
+.dashboard-shell .field {
+  width: 100%;
+  border: 1px solid #d8e2d4;
+  border-radius: 0.75rem;
+  background: #fff;
+  padding: 0.65rem 0.9rem;
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: #314232;
+  outline: none;
+}
