@@ -13,6 +13,7 @@ import {
   Library,
   LogOut,
   Menu,
+  Plus,
   Search,
   Settings,
   Store,
@@ -20,7 +21,8 @@ import {
   User,
   X,
 } from "lucide-react";
-import { fakeNotifications, fakeUser } from "@/lib/fake-data";
+import { fakeUser } from "@/lib/fake-data";
+import { useNotificationStore } from "@/lib/notification-store";
 
 type NavigationItem = { href: string; label: string; icon: typeof Home };
 
@@ -88,10 +90,11 @@ export default function DashboardLayout({
     "notifications" | "profile" | null
   >(null);
   const headerActionsRef = useRef<HTMLDivElement>(null);
-  const unreadCount = fakeNotifications.filter(
+  const notifications = useNotificationStore((state) => state.notifications);
+  const unreadCount = notifications.filter(
     (notification) => !notification.isRead,
   ).length;
-  const previewNotifications = fakeNotifications
+  const previewNotifications = notifications
     .filter((notification) => !notification.isRead)
     .slice(0, 3);
 
@@ -227,6 +230,13 @@ export default function DashboardLayout({
             </div>
           </div>
           <div className="flex items-center gap-2" ref={headerActionsRef}>
+            <Link
+              aria-label="Ajouter un livre"
+              className="grid size-10 place-items-center rounded-xl bg-[#314c35] text-white shadow-[0_8px_18px_rgba(49,76,53,0.18)] transition hover:bg-[#263e2a]"
+              href="/dashboard/search"
+            >
+              <Plus aria-hidden="true" className="size-4.5" />
+            </Link>
             <div className="relative">
               <button
                 aria-controls="notifications-popover"

@@ -23,7 +23,7 @@ import { useBookStore } from "@/lib/book-store";
 
 function ReadingProgress({ value }: { value: number }) {
   return (
-    <div className="h-1.5 overflow-hidden rounded-full bg-white/20">
+    <div className="h-1.5 overflow-hidden rounded-full bg-[#c7d9c1]">
       <div
         className="h-full rounded-full bg-[#d5ed8b]"
         style={{ width: `${Math.min(100, Math.max(0, value))}%` }}
@@ -33,18 +33,18 @@ function ReadingProgress({ value }: { value: number }) {
 }
 
 export default function DashboardPage() {
-  const { books } = useBookStore();
+  const { books, readingGoal } = useBookStore();
   const readingBooks = books.filter((book) => book.status === "IN_PROGRESS");
   const currentBook = readingBooks[0];
   const shelfBooks = readingBooks.slice(1, 4);
-  const completedThisWeek = fakeStatsProgress
-    .slice(-7)
-    .reduce((sum, day) => sum + day.pagesRead, 0);
-  const weeklyGoal = 180;
-  const goalProgress = Math.min(
-    100,
-    Math.round((completedThisWeek / weeklyGoal) * 100),
-  );
+  const goalBook = readingGoal
+    ? books.find((book) => book.id === readingGoal.bookId)
+    : undefined;
+  const goalTargetPage = readingGoal?.targetPage ?? 0;
+  const goalCurrentPage = goalBook?.lastReadPage ?? 0;
+  const goalProgress = goalTargetPage
+    ? Math.min(100, Math.round((goalCurrentPage / goalTargetPage) * 100))
+    : 0;
   const currentProgress = currentBook?.totalPages
     ? Math.round((currentBook.lastReadPage / currentBook.totalPages) * 100)
     : 0;
@@ -83,28 +83,28 @@ export default function DashboardPage() {
 
       <section className="grid gap-5 xl:grid-cols-[minmax(0,1.55fr)_minmax(19rem,0.75fr)]">
         {currentBook ? (
-          <article className="relative min-h-[23rem] overflow-hidden rounded-[1.75rem] bg-[#2c4933] p-6 text-[#fbfbf3] shadow-[0_20px_45px_rgba(38,61,42,0.22)] sm:p-8">
-            <div className="absolute -right-24 -top-32 size-80 rounded-full bg-[#8fb177]/20 blur-3xl" />
-            <div className="absolute -bottom-36 left-1/3 size-80 rounded-full bg-[#e1d395]/10 blur-3xl" />
+          <article className="relative min-h-92 overflow-hidden rounded-[1.75rem] border border-[#cfdfc8] bg-[#e7efe1] p-6 text-[#29402c] shadow-[0_20px_45px_rgba(38,61,42,0.10)] sm:p-8">
+            <div className="absolute -right-24 -top-32 size-80 rounded-full bg-white/45 blur-3xl" />
+            <div className="absolute -bottom-36 left-1/3 size-80 rounded-full bg-[#c8dfbd]/35 blur-3xl" />
             <div className="relative flex h-full flex-col justify-between gap-7 sm:flex-row sm:items-end">
               <div className="max-w-lg">
-                <p className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-xs font-semibold text-[#e4efdf]">
+                <p className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/70 px-3 py-1.5 text-xs font-semibold text-[#496a48]">
                   <BookOpen className="size-3.5" />
                   Lecture en cours
                 </p>
                 <p className="max-w-md font-serif text-3xl leading-tight tracking-[-0.035em] sm:text-4xl">
                   {currentBook.title}
                 </p>
-                <p className="mt-2 text-sm text-[#c9d8c6]">
+                <p className="mt-2 text-sm text-[#657762]">
                   {currentBook.author}
                 </p>
                 <div className="mt-8 max-w-md">
-                  <div className="mb-2 flex items-center justify-between text-xs text-[#dfead9]">
+                  <div className="mb-2 flex items-center justify-between text-xs text-[#5d735a]">
                     <span>
                       Page {currentBook.lastReadPage} sur{" "}
                       {currentBook.totalPages}
                     </span>
-                    <span className="font-bold text-[#d5ed8b]">
+                    <span className="font-bold text-[#426b42]">
                       {currentProgress}%
                     </span>
                   </div>
@@ -112,7 +112,7 @@ export default function DashboardPage() {
                 </div>
                 <Link
                   href={`/dashboard/books/${currentBook.id}/read`}
-                  className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#d5ed8b] px-4 py-3 text-sm font-bold text-[#29402c] transition hover:bg-[#e3f4ad]"
+                  className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#314c35] px-4 py-3 text-sm font-bold text-white shadow-[0_10px_20px_rgba(49,76,53,0.16)] transition hover:bg-[#263e2a]"
                 >
                   Reprendre la lecture
                   <ArrowRight className="size-4" />
@@ -120,9 +120,9 @@ export default function DashboardPage() {
               </div>
               <Link
                 href={`/dashboard/books/${currentBook.id}`}
-                className="group relative block w-28 shrink-0 overflow-hidden rounded-xl bg-[#1f3425] shadow-2xl ring-1 ring-white/15 sm:w-36"
+                className="group relative block w-28 shrink-0 overflow-hidden rounded-xl bg-[#d4e2cd] shadow-xl ring-1 ring-white/60 sm:w-36"
               >
-                <div className="relative aspect-[2/3]">
+                <div className="relative aspect-2/3">
                   {currentBook.coverUrl ? (
                     <Image
                       src={currentBook.coverUrl}
@@ -141,12 +141,12 @@ export default function DashboardPage() {
             </div>
           </article>
         ) : (
-          <article className="rounded-[1.75rem] bg-[#2c4933] p-8 text-[#fbfbf3]">
-            <BookMarked className="size-9 text-[#d5ed8b]" />
+          <article className="rounded-[1.75rem] border border-[#cfdfc8] bg-[#e7efe1] p-8 text-[#29402c]">
+            <BookMarked className="size-9 text-[#426b42]" />
             <h2 className="mt-8 font-serif text-3xl">
               Votre prochaine lecture vous attend.
             </h2>
-            <p className="mt-3 max-w-md text-sm leading-6 text-[#c9d8c6]">
+            <p className="mt-3 max-w-md text-sm leading-6 text-[#657762]">
               Ajoutez un livre, puis reprenez ici dès que vous êtes prêt à
               commencer.
             </p>
@@ -165,32 +165,50 @@ export default function DashboardPage() {
               <Target className="size-5" />
             </span>
             <span className="rounded-full bg-[#f2f5ed] px-3 py-1 text-xs font-bold text-[#62755e]">
-              Cette semaine
+              Objectif de lecture
             </span>
           </div>
-          <p className="mt-7 font-serif text-4xl tracking-[-0.05em] text-[#2c392b]">
-            {completedThisWeek}
-            <span className="ml-1 text-xl text-[#879283]">pages</span>
-          </p>
-          <p className="mt-1 text-sm text-[#6c786a]">
-            sur un objectif de {weeklyGoal} pages
-          </p>
-          <div className="mt-6 h-2 overflow-hidden rounded-full bg-[#e7ede3]">
-            <div
-              className="h-full rounded-full bg-[#6f9862]"
-              style={{ width: `${goalProgress}%` }}
-            />
-          </div>
-          <div className="mt-5 rounded-2xl bg-[#f3f6ef] p-4">
-            <p className="flex items-center gap-2 text-sm font-semibold text-[#3c533b]">
-              <Timer className="size-4 text-[#6f9862]" />
-              Un bel élan
-            </p>
-            <p className="mt-1 text-xs leading-5 text-[#71806e]">
-              Vous avez lu {completedThisWeek} pages cette semaine. Continuez
-              ainsi.
-            </p>
-          </div>
+          {goalBook ? (
+            <>
+              <p className="mt-7 truncate font-serif text-3xl tracking-tighter text-[#2c392b]">
+                {goalBook.title}
+              </p>
+              <p className="mt-2 text-sm text-[#6c786a]">
+                Atteindre la page {goalTargetPage}
+              </p>
+              <div className="mt-6 h-2 overflow-hidden rounded-full bg-[#e7ede3]">
+                <div
+                  className="h-full rounded-full bg-[#6f9862]"
+                  style={{ width: `${goalProgress}%` }}
+                />
+              </div>
+              <div className="mt-5 rounded-2xl bg-[#f3f6ef] p-4">
+                <p className="flex items-center gap-2 text-sm font-semibold text-[#3c533b]">
+                  <Timer className="size-4 text-[#6f9862]" /> Page{" "}
+                  {goalCurrentPage} sur {goalTargetPage}
+                </p>
+                <p className="mt-1 text-xs leading-5 text-[#71806e]">
+                  {goalProgress}% de votre objectif atteint.
+                </p>
+              </div>
+            </>
+          ) : (
+            <div className="mt-7 rounded-2xl bg-[#f3f6ef] p-5">
+              <p className="font-serif text-2xl text-[#334833]">
+                Choisissez un objectif
+              </p>
+              <p className="mt-2 text-sm leading-6 text-[#71806e]">
+                Ouvrez la fiche d’un livre pour définir la page que vous
+                souhaitez atteindre.
+              </p>
+              <Link
+                href="/dashboard/books"
+                className="mt-4 inline-flex text-sm font-semibold text-[#426742] hover:underline"
+              >
+                Choisir un livre
+              </Link>
+            </div>
+          )}
         </aside>
       </section>
 
@@ -228,7 +246,7 @@ export default function DashboardPage() {
             <span
               className={`grid size-10 place-items-center rounded-xl ${tone}`}
             >
-              <Icon className="size-[18px]" />
+              <Icon className="size-4.5" />
             </span>
             <div>
               <p className="font-serif text-2xl tracking-[-0.04em] text-[#2d392c]">
