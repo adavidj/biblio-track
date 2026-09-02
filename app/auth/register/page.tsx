@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Mail, Lock, User, Eye, EyeOff, Loader2 } from "lucide-react";
+import { BookOpen, Mail, Lock, User, Eye, EyeOff, Loader2 } from "lucide-react";
 import { authApi } from "@/lib/api";
 
 export default function RegisterPage() {
@@ -17,168 +17,813 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     setError("");
     setLoading(true);
 
     try {
-      const res = await authApi.register({ firstName, lastName, email, password });
+      const res = await authApi.register({
+        firstName,
+        lastName,
+        email,
+        password,
+      });
+
       if (res.success) {
         setSuccess(true);
       }
     } catch (err: unknown) {
       const msg =
         (err as { message?: string }).message || "Erreur lors de l'inscription";
+
       setError(msg);
     } finally {
       setLoading(false);
     }
   };
 
+  /* =========================================================
+      SUCCESS — EMAIL VERIFICATION
+  ========================================================= */
   if (success) {
     return (
-      <div className="glass-strong rounded-2xl p-8 shadow-xl text-center">
-        <div className="w-16 h-16 rounded-full bg-success/10 flex items-center justify-center mx-auto mb-4">
-          <Mail className="w-8 h-8 text-success" />
-        </div>
-        <h1 className="text-2xl font-bold text-text-primary mb-2">
-          Vérifiez votre email 📧
-        </h1>
-        <p className="text-sm text-text-secondary mb-6">
-          Un code de vérification a été envoyé à <strong>{email}</strong>.
-          Entrez-le pour activer votre compte.
-        </p>
-        <Link
-          href={`/auth/verify?email=${encodeURIComponent(email)}`}
-          className="btn-primary inline-flex items-center gap-2 px-8 py-3 text-sm"
+      <main className="min-h-screen w-full overflow-x-hidden bg-[#fffdf8]">
+        <div
+          className="
+            mx-auto
+            flex
+            min-h-screen
+            w-full
+            max-w-7xl
+            flex-col
+            px-6
+            sm:px-8
+            lg:grid
+            lg:grid-cols-[1.05fr_0.95fr]
+            lg:items-center
+            lg:gap-14
+          "
         >
-          Entrer le code
-        </Link>
-      </div>
+          {/* LEFT */}
+          <section className="flex min-h-screen w-full flex-col lg:min-h-0">
+            {/* Logo */}
+            <div className="pt-8 sm:pt-9 lg:pt-0">
+              <Link
+                href="/"
+                className="
+                  flex
+                  w-fit
+                  items-center
+                  gap-2.5
+                  transition-opacity
+                  hover:opacity-80
+                "
+              >
+                <div
+                  className="
+                    flex
+                    h-9
+                    w-9
+                    shrink-0
+                    items-center
+                    justify-center
+                    rounded-lg
+                    bg-[#1a1a1a]
+                    sm:h-10
+                    sm:w-10
+                  "
+                >
+                  <BookOpen
+                    className="h-4.5 w-4.5 text-white sm:h-5 sm:w-5"
+                    strokeWidth={1.8}
+                  />
+                </div>
+
+                <span
+                  className="
+                    whitespace-nowrap
+                    text-[17px]
+                    font-semibold
+                    tracking-[-0.02em]
+                    text-[#1a1a1a]
+                    sm:text-[18px]
+                    md:text-[19px]
+                  "
+                >
+                  BiblioTrack
+                </span>
+              </Link>
+            </div>
+
+            {/* Success content */}
+            <div className="flex flex-1 items-center py-12 sm:py-14 lg:py-10">
+              <div className="w-full max-w-125">
+                <div className="mb-8">
+                  <div
+                    className="
+                      mb-6
+                      flex
+                      h-14
+                      w-14
+                      items-center
+                      justify-center
+                      rounded-full
+                      bg-[#e8eee2]
+                    "
+                  >
+                    <Mail
+                      className="h-6 w-6 text-[#466145]"
+                      strokeWidth={1.7}
+                    />
+                  </div>
+
+                  <h1
+                    className="
+                      max-w-125
+                      font-serif
+                      text-[clamp(1.8rem,3vw,2.6rem)]
+                      font-normal
+                      leading-[1.1]
+                      tracking-tight
+                      text-[#1a1a1a]
+                    "
+                  >
+                    Vérifiez votre adresse e-mail.
+                  </h1>
+
+                  <p
+                    className="
+                      mt-4
+                      max-w-115
+                      text-[clamp(0.8rem,1.15vw,0.95rem)]
+                      leading-6
+                      text-[#6b6b64]
+                    "
+                  >
+                    Un code de vérification a été envoyé à{" "}
+                    <strong className="font-medium text-[#33332f]">
+                      {email}
+                    </strong>
+                    . Entrez ce code pour activer votre compte BiblioTrack.
+                  </p>
+                </div>
+
+                <Link
+                  href={`/auth/verify?email=${encodeURIComponent(email)}`}
+                  className="
+                    flex
+                    h-[clamp(45px,3.4vw,52px)]
+                    w-full
+                    items-center
+                    justify-center
+                    rounded-xl
+                    bg-[#1a1a1a]
+                    px-5
+                    text-[13px]
+                    font-medium
+                    text-white
+                    transition-all
+                    duration-200
+                    hover:bg-[#30302e]
+                    active:scale-[0.99]
+                    sm:text-[14px]
+                  "
+                >
+                  Entrer le code de vérification
+                </Link>
+
+                <p
+                  className="
+                    mt-6
+                    text-center
+                    text-[12px]
+                    text-[#77746c]
+                    sm:text-[13px]
+                  "
+                >
+                  Une erreur dans votre adresse ?{" "}
+                  <button
+                    type="button"
+                    onClick={() => setSuccess(false)}
+                    className="
+                      font-medium
+                      text-[#1a1a1a]
+                      underline
+                      underline-offset-2
+                      transition-opacity
+                      hover:opacity-70
+                    "
+                  >
+                    Modifier
+                  </button>
+                </p>
+              </div>
+            </div>
+          </section>
+
+          {/* RIGHT — VIDEO */}
+          <section
+            className="
+              hidden
+              w-full
+              lg:flex
+              lg:items-center
+              lg:justify-end
+            "
+          >
+            <div
+              className="
+                relative
+                aspect-[0.82/1]
+                w-full
+                max-w-130
+                overflow-hidden
+                rounded-[1.4rem]
+                border
+                border-[#d3d6c9]
+                bg-[#e8e5dc]
+                shadow-[0_25px_60px_rgba(50,61,42,0.12)]
+              "
+            >
+              <video
+                className="absolute inset-0 h-full w-full object-cover"
+                autoPlay
+                loop
+                muted
+                playsInline
+                preload="auto"
+              >
+                <source src="/videos/auth/auth-video.mp4" type="video/mp4" />
+              </video>
+            </div>
+          </section>
+        </div>
+      </main>
     );
   }
 
+  /* =========================================================
+      REGISTER PAGE
+  ========================================================= */
   return (
-    <div className="glass-strong rounded-2xl p-8 shadow-xl">
-      <h1 className="text-2xl font-bold text-text-primary mb-2 text-center">
-        Créer un compte ✨
-      </h1>
-      <p className="text-sm text-text-secondary text-center mb-8">
-        Rejoignez BiblioTrack en quelques secondes
-      </p>
-
-      {error && (
-        <div className="bg-danger/10 border border-danger/20 text-danger text-sm rounded-xl px-4 py-3 mb-6">
-          {error}
-        </div>
-      )}
-
-      <form onSubmit={handleSubmit} className="space-y-5">
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-semibold text-text-primary mb-1.5">
-              Prénom
-            </label>
-            <div className="relative">
-              <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
-              <input
-                type="text"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                placeholder="Jean"
-                required
-                className="w-full pl-10 pr-4 py-3 rounded-xl bg-surface border border-border text-text-primary placeholder:text-text-muted text-sm font-medium transition-all"
-              />
-            </div>
-          </div>
-          <div>
-            <label className="block text-sm font-semibold text-text-primary mb-1.5">
-              Nom
-            </label>
-            <div className="relative">
-              <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
-              <input
-                type="text"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                placeholder="Dupont"
-                required
-                className="w-full pl-10 pr-4 py-3 rounded-xl bg-surface border border-border text-text-primary placeholder:text-text-muted text-sm font-medium transition-all"
-              />
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-sm font-semibold text-text-primary mb-1.5">
-            Email
-          </label>
-          <div className="relative">
-            <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="vous@exemple.com"
-              required
-              className="w-full pl-10 pr-4 py-3 rounded-xl bg-surface border border-border text-text-primary placeholder:text-text-muted text-sm font-medium transition-all"
-            />
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-sm font-semibold text-text-primary mb-1.5">
-            Mot de passe
-          </label>
-          <div className="relative">
-            <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
-            <input
-              type={showPassword ? "text" : "password"}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Min. 8 caractères"
-              required
-              minLength={8}
-              className="w-full pl-10 pr-11 py-3 rounded-xl bg-surface border border-border text-text-primary placeholder:text-text-muted text-sm font-medium transition-all"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-secondary transition-colors"
+    <main className="min-h-screen w-full overflow-x-hidden bg-[#fffdf8]">
+      <div
+        className="
+          mx-auto
+          flex
+          min-h-screen
+          w-full
+          max-w-7xl
+          flex-col
+          px-6
+          sm:px-8
+          lg:grid
+          lg:grid-cols-[1.05fr_0.95fr]
+          lg:items-center
+          lg:gap-14
+        "
+      >
+        {/* =====================================================
+            LEFT — REGISTER
+        ===================================================== */}
+        <section className="flex min-h-screen w-full flex-col lg:min-h-0">
+          {/* ===================================================
+              LOGO
+          =================================================== */}
+          <div className="pt-8 sm:pt-9 lg:pt-0">
+            <Link
+              href="/"
+              className="
+                flex
+                w-fit
+                items-center
+                gap-2.5
+                transition-opacity
+                hover:opacity-80
+              "
             >
-              {showPassword ? (
-                <EyeOff className="w-4 h-4" />
-              ) : (
-                <Eye className="w-4 h-4" />
-              )}
-            </button>
+              <div
+                className="
+                  flex
+                  h-9
+                  w-9
+                  shrink-0
+                  items-center
+                  justify-center
+                  rounded-lg
+                   bg-[#314c35] 
+                  sm:h-10
+                  sm:w-10
+                "
+              >
+                <BookOpen
+                  className="h-4.5 w-4.5 text-white sm:h-5 sm:w-5"
+                  strokeWidth={1.8}
+                />
+              </div>
+
+              <span
+                className="
+                  whitespace-nowrap
+                  text-[17px]
+                  font-semibold
+                  tracking-[-0.02em]
+                  text-[#1a1a1a]
+                  sm:text-[18px]
+                  md:text-[19px]
+                "
+              >
+                BiblioTrack
+              </span>
+            </Link>
           </div>
-        </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="btn-primary w-full py-3 text-sm flex items-center justify-center gap-2 disabled:opacity-50"
-        >
-          {loading ? (
-            <>
-              <Loader2 className="w-4 h-4 animate-spin" />
-              Création...
-            </>
-          ) : (
-            "Créer mon compte"
-          )}
-        </button>
-      </form>
+          {/* ===================================================
+              REGISTER CONTENT
+          =================================================== */}
+          <div className="flex flex-1 items-center py-10 sm:py-12 lg:py-8">
+            <div className="w-full max-w-125">
+              {/* HEADING */}
+              <div className="mb-7 sm:mb-8">
+                <h1
+                  className="
+                    max-w-125
+                    font-serif
+                    text-[clamp(1.75rem,3vw,2.6rem)]
+                    font-normal
+                    leading-[1.1]
+                    tracking-tight
+                    text-[#1a1a1a]
+                  "
+                >
+                  Créez votre compte BiblioTrack
+                </h1>
 
-      <p className="text-center text-sm text-text-secondary mt-6">
-        Déjà un compte ?{" "}
-        <Link
-          href="/auth/login"
-          className="font-semibold text-primary hover:text-primary-dark transition-colors"
+                <p
+                  className="
+                    mt-3
+                    max-w-115
+                    text-[clamp(0.8rem,1.15vw,0.95rem)]
+                    leading-6
+                    text-[#6b6b64]
+                  "
+                >
+                  Commencez à organiser vos lectures, suivre votre progression
+                  et construire votre bibliothèque personnelle.
+                </p>
+              </div>
+
+              {/* ERROR */}
+              {error && (
+                <div
+                  className="
+                    mb-5
+                    rounded-xl
+                    border
+                    border-[#e5c7c0]
+                    bg-[#fbefec]
+                    px-4
+                    py-3
+                    text-[12px]
+                    leading-5
+                    text-[#9b4d3d]
+                    sm:text-[13px]
+                  "
+                >
+                  {error}
+                </div>
+              )}
+
+              {/* =================================================
+                  FORM
+              ================================================= */}
+              <form onSubmit={handleSubmit} className="w-full space-y-4">
+                {/* FIRST NAME + LAST NAME */}
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  {/* FIRST NAME */}
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="firstName"
+                      className="
+                        block
+                        text-[12px]
+                        font-medium
+                        text-[#33332f]
+                        sm:text-[13px]
+                      "
+                    >
+                      Prénom
+                    </label>
+
+                    <div className="relative">
+                      <User
+                        className="
+                          absolute
+                          left-3.5
+                          top-1/2
+                          h-4
+                          w-4
+                          -translate-y-1/2
+                          text-[#aaa79e]
+                        "
+                        strokeWidth={1.7}
+                      />
+
+                      <input
+                        id="firstName"
+                        type="text"
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                        placeholder="Jean"
+                        autoComplete="given-name"
+                        required
+                        className="
+                          h-[clamp(45px,3.4vw,52px)]
+                          w-full
+                          rounded-xl
+                          border
+                          border-[#e4e1d8]
+                          bg-white
+                          px-4
+                          pl-10
+                          text-[13px]
+                          text-[#1a1a1a]
+                          outline-none
+                          transition-all
+                          placeholder:text-[#aaa79e]
+                          focus:border-[#aaa69b]
+                          focus:ring-4
+                          focus:ring-[#1a1a1a]/4
+                          sm:text-[14px]
+                        "
+                      />
+                    </div>
+                  </div>
+
+                  {/* LAST NAME */}
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="lastName"
+                      className="
+                        block
+                        text-[12px]
+                        font-medium
+                        text-[#33332f]
+                        sm:text-[13px]
+                      "
+                    >
+                      Nom
+                    </label>
+
+                    <div className="relative">
+                      <User
+                        className="
+                          absolute
+                          left-3.5
+                          top-1/2
+                          h-4
+                          w-4
+                          -translate-y-1/2
+                          text-[#aaa79e]
+                        "
+                        strokeWidth={1.7}
+                      />
+
+                      <input
+                        id="lastName"
+                        type="text"
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                        placeholder="Dupont"
+                        autoComplete="family-name"
+                        required
+                        className="
+                          h-[clamp(45px,3.4vw,52px)]
+                          w-full
+                          rounded-xl
+                          border
+                          border-[#e4e1d8]
+                          bg-white
+                          px-4
+                          pl-10
+                          text-[13px]
+                          text-[#1a1a1a]
+                          outline-none
+                          transition-all
+                          placeholder:text-[#aaa79e]
+                          focus:border-[#aaa69b]
+                          focus:ring-4
+                          focus:ring-[#1a1a1a]/4
+                          sm:text-[14px]
+                        "
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* EMAIL */}
+                <div className="space-y-2">
+                  <label
+                    htmlFor="email"
+                    className="
+                      block
+                      text-[12px]
+                      font-medium
+                      text-[#33332f]
+                      sm:text-[13px]
+                    "
+                  >
+                    Adresse e-mail
+                  </label>
+
+                  <div className="relative">
+                    <Mail
+                      className="
+                        absolute
+                        left-3.5
+                        top-1/2
+                        h-4
+                        w-4
+                        -translate-y-1/2
+                        text-[#aaa79e]
+                      "
+                      strokeWidth={1.7}
+                    />
+
+                    <input
+                      id="email"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="vous@exemple.com"
+                      autoComplete="email"
+                      required
+                      className="
+                        h-[clamp(45px,3.4vw,52px)]
+                        w-full
+                        rounded-xl
+                        border
+                        border-[#e4e1d8]
+                        bg-white
+                        px-4
+                        pl-10
+                        text-[13px]
+                        text-[#1a1a1a]
+                        outline-none
+                        transition-all
+                        placeholder:text-[#aaa79e]
+                        focus:border-[#aaa69b]
+                        focus:ring-4
+                        focus:ring-[#1a1a1a]/4
+                        sm:px-5
+                        sm:pl-10
+                        sm:text-[14px]
+                      "
+                    />
+                  </div>
+                </div>
+
+                {/* PASSWORD */}
+                <div className="space-y-2">
+                  <label
+                    htmlFor="password"
+                    className="
+                      block
+                      text-[12px]
+                      font-medium
+                      text-[#33332f]
+                      sm:text-[13px]
+                    "
+                  >
+                    Mot de passe
+                  </label>
+
+                  <div className="relative">
+                    <Lock
+                      className="
+                        absolute
+                        left-3.5
+                        top-1/2
+                        h-4
+                        w-4
+                        -translate-y-1/2
+                        text-[#aaa79e]
+                      "
+                      strokeWidth={1.7}
+                    />
+
+                    <input
+                      id="password"
+                      type={showPassword ? "text" : "password"}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="Min. 8 caractères"
+                      autoComplete="new-password"
+                      required
+                      minLength={8}
+                      className="
+                        h-[clamp(45px,3.4vw,52px)]
+                        w-full
+                        rounded-xl
+                        border
+                        border-[#e4e1d8]
+                        bg-white
+                        px-4
+                        pl-10
+                        pr-12
+                        text-[13px]
+                        text-[#1a1a1a]
+                        outline-none
+                        transition-all
+                        placeholder:text-[#aaa79e]
+                        focus:border-[#aaa69b]
+                        focus:ring-4
+                        focus:ring-[#1a1a1a]/4
+                        sm:px-5
+                        sm:pl-10
+                        sm:pr-12
+                        sm:text-[14px]
+                      "
+                    />
+
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword((value) => !value)}
+                      aria-label={
+                        showPassword
+                          ? "Masquer le mot de passe"
+                          : "Afficher le mot de passe"
+                      }
+                      className="
+                        absolute
+                        right-3
+                        top-1/2
+                        -translate-y-1/2
+                        rounded-md
+                        p-1.5
+                        text-[#9b9990]
+                        transition-colors
+                        hover:text-[#1a1a1a]
+                      "
+                    >
+                      {showPassword ? (
+                        <EyeOff size={17} strokeWidth={1.7} />
+                      ) : (
+                        <Eye size={17} strokeWidth={1.7} />
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                {/* SUBMIT */}
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="
+                    mt-2
+                    flex
+                    h-[clamp(45px,3.4vw,52px)]
+                    w-full
+                    items-center
+                    justify-center
+                    gap-2
+                    rounded-xl
+                     bg-[#314c35] 
+                    px-5
+                    text-[13px]
+                    font-medium
+                    text-white
+                    transition-all
+                    duration-200
+                    hover:bg-[#263E2A]
+                    active:scale-[0.99]
+                    disabled:cursor-not-allowed
+                    disabled:opacity-60
+                    sm:text-[14px]
+                    shadow[ rgba(49, 76, 53, 0.18)]
+                  "
+                >
+                  {loading ? (
+                    <>
+                      <Loader2
+                        className="h-4 w-4 animate-spin"
+                        strokeWidth={1.8}
+                      />
+                      Création...
+                    </>
+                  ) : (
+                    "Créer mon compte"
+                  )}
+                </button>
+              </form>
+
+              {/* LOGIN */}
+              <p
+                className="
+                  mt-5
+                  text-center
+                  text-[12px]
+                  text-[#77746c]
+                  sm:mt-6
+                  sm:text-[13px]
+                "
+              >
+                Vous avez déjà un compte ?{" "}
+                <Link
+                  href="/auth/login"
+                  className="
+                    font-medium
+                    text-[#1a1a1a]
+                    underline
+                    underline-offset-2
+                    transition-opacity
+                    hover:opacity-70
+                  "
+                >
+                  Se connecter
+                </Link>
+              </p>
+
+              {/* PRIVACY */}
+              <p
+                className="
+                  mx-auto
+                  mt-5
+                  max-w-107.5
+                  px-2
+                  text-center
+                  text-[10.5px]
+                  leading-5
+                  text-[#aaa79e]
+                  sm:mt-6
+                  sm:text-[11px]
+                "
+              >
+                En créant votre compte, vous acceptez les{" "}
+                <Link
+                  href="#"
+                  className="text-[#77746c] underline underline-offset-2"
+                >
+                  conditions d&apos;utilisation
+                </Link>{" "}
+                et la{" "}
+                <Link
+                  href="#"
+                  className="text-[#77746c] underline underline-offset-2"
+                >
+                  politique de confidentialité
+                </Link>{" "}
+                de BiblioTrack.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* =========================================================
+            RIGHT — VIDEO
+        ========================================================= */}
+        <section
+          className="
+            hidden
+            w-full
+            lg:flex
+            lg:items-center
+            lg:justify-end
+          "
         >
-          Se connecter
-        </Link>
-      </p>
-    </div>
+          <div
+            className="
+              relative
+              aspect-[0.82/1]
+              w-full
+              max-w-130
+              overflow-hidden
+              rounded-[1.4rem]
+              border
+              border-[#d3d6c9]
+              bg-[#e8e5dc]
+              shadow-[0_25px_60px_rgba(50,61,42,0.12)]
+            "
+          >
+            <video
+              className="
+                absolute
+                inset-0
+                h-full
+                w-full
+                object-cover
+              "
+              autoPlay
+              loop
+              muted
+              playsInline
+              preload="auto"
+            >
+              <source src="/videos/auth/auth-video.mp4" type="video/mp4" />
+            </video>
+          </div>
+        </section>
+      </div>
+    </main>
   );
 }

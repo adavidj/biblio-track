@@ -16,13 +16,13 @@ import {
   User,
   Mail,
   Calendar,
-  Settings,
 } from "lucide-react";
 import { fakeUser } from "@/lib/fake-data";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ImageDropzone } from "@/components/ui/image-dropzone";
+import { PageHeader } from "@/components/shared/page-header";
 
 export default function ProfilePage() {
   const [firstName, setFirstName] = useState(fakeUser.firstName);
@@ -84,11 +84,7 @@ export default function ProfilePage() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-text-primary">Mon Profil</h1>
-        <p className="text-text-secondary mt-1">Gérez vos informations et votre avatar</p>
-      </div>
+      <PageHeader eyebrow="Votre compte" title="Mon profil" description="Mettez à jour vos informations, votre photo et les accès à votre compte." />
 
       {/* Profile Hero Card */}
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#263e2a] via-[#3f6343] to-[#72966a] p-8 text-white shadow-xl">
@@ -299,19 +295,11 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      {/* API Reference */}
-      <div className="glass-strong rounded-2xl p-5">
-        <div className="flex items-center gap-2 mb-3">
-          <Settings className="w-4 h-4 text-text-muted" />
-          <h3 className="text-sm font-bold text-text-primary">Endpoints API</h3>
-        </div>
-        <div className="grid sm:grid-cols-2 gap-2 text-xs font-mono text-text-secondary">
-          <p><span className="text-[#5BA3D9] font-semibold">GET</span> /users/me — Voir le profil</p>
-          <p><span className="text-[#E8A838] font-semibold">PATCH</span> /users/me — Modifier</p>
-          <p><span className="text-[#E8A838] font-semibold">PATCH</span> /users/me/avatar — Upload</p>
-          <p><span className="text-[#b85e55] font-semibold">DELETE</span> /users/me/avatar — Supprimer</p>
-        </div>
-      </div>
+      <section className="grid gap-4 rounded-2xl border border-[#dce4d8] bg-[#fffef9] p-5 shadow-[0_12px_35px_rgba(49,76,53,0.05)] sm:grid-cols-3 sm:p-6">
+        <div className="flex items-center gap-3"><span className="grid size-10 place-items-center rounded-xl bg-[#e9f0e5] text-[#486b47]"><Mail className="size-5" /></span><div><p className="text-xs text-text-muted">Adresse e-mail</p><p className="mt-1 truncate text-sm font-semibold text-text-primary">{fakeUser.email}</p></div></div>
+        <div className="flex items-center gap-3"><span className="grid size-10 place-items-center rounded-xl bg-[#e9f0e5] text-[#486b47]"><Check className="size-5" /></span><div><p className="text-xs text-text-muted">État du compte</p><p className="mt-1 text-sm font-semibold text-text-primary">{fakeUser.isVerified ? "E-mail vérifié" : "E-mail à vérifier"}</p></div></div>
+        <div className="flex items-center gap-3"><span className="grid size-10 place-items-center rounded-xl bg-[#e9f0e5] text-[#486b47]"><Calendar className="size-5" /></span><div><p className="text-xs text-text-muted">Membre depuis</p><p className="mt-1 text-sm font-semibold text-text-primary">{new Date(fakeUser.createdAt).toLocaleDateString("fr-FR", { month: "long", year: "numeric" })}</p></div></div>
+      </section>
 
       {/* ===== AVATAR UPLOAD SHEET ===== */}
       <Sheet open={showAvatarSheet} onOpenChange={setShowAvatarSheet}>

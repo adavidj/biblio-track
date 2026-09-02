@@ -1,6 +1,7 @@
 "use client";
 
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 import { fakeBooks } from "./fake-data";
 
 export interface Book {
@@ -31,6 +32,12 @@ export interface Book {
   hasReadableContent?: boolean;
   createdAt: string;
   updatedAt: string;
+  isFavorite?: boolean;
+}
+
+export interface ReadingGoal {
+  bookId: string;
+  targetPage: number;
 }
 
 interface BookStore {
@@ -38,9 +45,12 @@ interface BookStore {
   addBook: (book: Book) => void;
   removeBook: (id: string) => void;
   updateBook: (id: string, updates: Partial<Book>) => void;
+  readingGoal: ReadingGoal | null;
+  setReadingGoal: (goal: ReadingGoal | null) => void;
+  toggleFavorite: (id: string) => void;
 }
 
-export const useBookStore = create<BookStore>((set) => ({
+export const useBookStore = create<BookStore>()(persist((set) => ({
   books: [...fakeBooks],
 
   addBook: (book) =>
@@ -57,4 +67,12 @@ export const useBookStore = create<BookStore>((set) => ({
     set((state) => ({
       books: state.books.map((b) => (b.id === id ? { ...b, ...updates } : b)),
     })),
-}));
+  readingGoal: null,
+  setReadingGoal: (readingGoal) => set({ readingGoal }),
+  toggleFavorite: (id) =>
+    set((state) => ({
+      books: state.books.map((book) =>
+        book.id === id ? { ...book, isFavorite: !book.isFavorite } : book,
+      ),
+    })),
+}), { name: "biblio-track-books" }));

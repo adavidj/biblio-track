@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -15,19 +15,14 @@ import {
   Menu,
   Plus,
   Search,
+  Settings,
+  Store,
   Tag,
   User,
   X,
 } from "lucide-react";
-import { fakeNotifications, fakeUser } from "@/lib/fake-data";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { fakeUser } from "@/lib/fake-data";
+import { useNotificationStore } from "@/lib/notification-store";
 
 type NavigationItem = { href: string; label: string; icon: typeof Home };
 
@@ -38,10 +33,15 @@ const navigation: NavigationItem[] = [
   { href: "/dashboard/stats", label: "Statistiques", icon: BarChart3 },
 ];
 
-const organization: NavigationItem[] = [
+const personalSpace: NavigationItem[] = [
   { href: "/dashboard/genres", label: "Genres", icon: Tag },
   { href: "/dashboard/notifications", label: "Notifications", icon: Bell },
   { href: "/dashboard/profile", label: "Profil", icon: User },
+];
+
+const commerce: NavigationItem[] = [
+  { href: "/dashboard/settings", label: "Paramètres", icon: Settings },
+  { href: "/dashboard/storefront", label: "Boutique", icon: Store },
 ];
 
 function NavigationGroup({
@@ -86,14 +86,39 @@ export default function DashboardLayout({
 }) {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
-  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const unreadCount = fakeNotifications.filter(
+  const [activePopover, setActivePopover] = useState<
+    "notifications" | "profile" | null
+  >(null);
+  const headerActionsRef = useRef<HTMLDivElement>(null);
+  const notifications = useNotificationStore((state) => state.notifications);
+  const unreadCount = notifications.filter(
     (notification) => !notification.isRead,
   ).length;
-  const previewNotifications = fakeNotifications
+  const previewNotifications = notifications
     .filter((notification) => !notification.isRead)
     .slice(0, 3);
+
+  useEffect(() => {
+    function closePopover(event: MouseEvent) {
+      if (!headerActionsRef.current?.contains(event.target as Node)) {
+        setActivePopover(null);
+      }
+    }
+
+    function closeOnEscape(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setActivePopover(null);
+      }
+    }
+
+    document.addEventListener("mousedown", closePopover);
+    document.addEventListener("keydown", closeOnEscape);
+
+    return () => {
+      document.removeEventListener("mousedown", closePopover);
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, []);
 
   return (
     <div className="dashboard-shell min-h-screen">
@@ -138,10 +163,22 @@ export default function DashboardLayout({
           </p>
           <div className="mt-3">
             <NavigationGroup
-              items={organization}
+              items={personalSpace}
               pathname={pathname}
               onNavigate={() => setIsOpen(false)}
             />
+          </div>
+          <div className="mt-8 border-t border-[#e0e6dc] pt-8">
+            <p className="px-3 text-[0.68rem] font-bold uppercase tracking-[0.14em] text-[#98a397]">
+              Boutique &amp; paramètres
+            </p>
+            <div className="mt-3">
+              <NavigationGroup
+                items={commerce}
+                pathname={pathname}
+                onNavigate={() => setIsOpen(false)}
+              />
+            </div>
           </div>
         </nav>
         <div className="rounded-2xl bg-[#f0f4ed] p-3">
@@ -192,129 +229,134 @@ export default function DashboardLayout({
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2" ref={headerActionsRef}>
             <Link
-              href="/dashboard/search"
-              className="hidden size-10 items-center justify-center rounded-xl border border-[#d9e1d4] bg-[#fffef9] text-[#4d654d] transition hover:bg-[#eef3ea] sm:flex"
               aria-label="Ajouter un livre"
+              className="grid size-10 place-items-center rounded-xl bg-[#314c35] text-white shadow-[0_8px_18px_rgba(49,76,53,0.18)] transition hover:bg-[#263e2a]"
+              href="/dashboard/search"
             >
-              <Plus className="size-4.75" aria-hidden="true" />
+              <Plus aria-hidden="true" className="size-4.5" />
             </Link>
-            <button
-              type="button"
-              onClick={() => setIsNotificationsOpen(true)}
-              className="relative grid size-10 place-items-center rounded-xl border border-[#d9e1d4] bg-[#fffef9] text-[#5c6b59] transition hover:bg-[#eef3ea]"
-              aria-label="Notifications"
-            >
-              <Bell className="size-4.5" />
-              {unreadCount > 0 && (
-                <span className="absolute -right-1 -top-1 grid size-4 place-items-center rounded-full bg-[#b85e55] text-[0.6rem] font-bold text-white">
-                  {unreadCount}
-                </span>
+            <div className="relative">
+              <button
+                aria-controls="notifications-popover"
+                aria-expanded={activePopover === "notifications"}
+                aria-label="Notifications"
+                className="relative grid size-10 place-items-center rounded-xl border border-[#d9e1d4] bg-[#fffef9] text-[#5c6b59] transition hover:bg-[#eef3ea]"
+                onClick={() =>
+                  setActivePopover((current) =>
+                    current === "notifications" ? null : "notifications",
+                  )
+                }
+                type="button"
+              >
+                <Bell className="size-4.5" />
+                {unreadCount > 0 && (
+                  <span className="absolute -right-1 -top-1 grid size-4 place-items-center rounded-full bg-[#b85e55] text-[0.6rem] font-bold text-white">
+                    {unreadCount}
+                  </span>
+                )}
+              </button>
+              {activePopover === "notifications" && (
+                <div
+                  className="absolute right-0 top-[calc(100%+0.75rem)] z-50 w-[min(22rem,calc(100vw-2.5rem))] rounded-2xl border border-[#dce4d7] bg-[#fffef9] p-4 shadow-[0_20px_50px_rgba(42,57,40,0.16)]"
+                  id="notifications-popover"
+                  role="dialog"
+                  aria-label="Notifications"
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <p className="font-serif text-xl text-[#2b382b]">Notifications</p>
+                      <p className="mt-1 text-xs text-[#71806e]">Les dernières nouvelles de votre bibliothèque.</p>
+                    </div>
+                    {unreadCount > 0 && (
+                      <span className="rounded-full bg-[#e7efe1] px-2 py-1 text-xs font-semibold text-[#416440]">
+                        {unreadCount}
+                      </span>
+                    )}
+                  </div>
+                  <div className="mt-4 space-y-2">
+                    {previewNotifications.length > 0 ? (
+                      previewNotifications.map((notification) => (
+                        <div className="flex gap-3 rounded-xl bg-[#f3f7f0] p-3" key={notification.id}>
+                          <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-[#dcebd4] text-[#477242]">
+                            <Bell aria-hidden="true" className="size-4" />
+                          </span>
+                          <div>
+                            <p className="text-sm font-semibold text-[#354534]">{notification.title}</p>
+                            <p className="mt-0.5 text-xs leading-5 text-[#71806e]">{notification.message}</p>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="rounded-xl bg-[#f3f7f0] p-4 text-sm text-[#71806e]">Vous êtes à jour.</p>
+                    )}
+                  </div>
+                  <Link
+                    className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#314c35] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#263e2a]"
+                    href="/dashboard/notifications"
+                    onClick={() => setActivePopover(null)}
+                  >
+                    Voir toutes les notifications
+                    <ChevronRight aria-hidden="true" className="size-4" />
+                  </Link>
+                </div>
               )}
-            </button>
-            <button
-              type="button"
-              onClick={() => setIsProfileOpen(true)}
-              className="grid size-10 place-items-center rounded-full bg-[#d3e2cc] text-xs font-bold text-[#35543a]"
-              aria-label="Ouvrir le résumé du profil"
-            >
-              {fakeUser.firstName[0]}
-              {fakeUser.lastName[0]}
-            </button>
+            </div>
+            <div className="relative">
+              <button
+                aria-controls="profile-popover"
+                aria-expanded={activePopover === "profile"}
+                aria-label="Ouvrir le résumé du profil"
+                className="grid size-10 place-items-center rounded-full bg-[#d3e2cc] text-xs font-bold text-[#35543a]"
+                onClick={() =>
+                  setActivePopover((current) =>
+                    current === "profile" ? null : "profile",
+                  )
+                }
+                type="button"
+              >
+                {fakeUser.firstName[0]}
+                {fakeUser.lastName[0]}
+              </button>
+              {activePopover === "profile" && (
+                <div
+                  className="absolute right-0 top-[calc(100%+0.75rem)] z-50 w-[min(20rem,calc(100vw-2.5rem))] rounded-2xl border border-[#dce4d7] bg-[#fffef9] p-4 shadow-[0_20px_50px_rgba(42,57,40,0.16)]"
+                  id="profile-popover"
+                  role="dialog"
+                  aria-label="Résumé du profil"
+                >
+                  <p className="font-serif text-xl text-[#2b382b]">Votre profil</p>
+                  <p className="mt-1 text-xs text-[#71806e]">Accédez rapidement à vos informations personnelles.</p>
+                  <div className="mt-4 rounded-2xl bg-[#314c35] p-4 text-white">
+                    <div className="flex items-center gap-3">
+                      <span className="grid size-11 place-items-center rounded-xl bg-white/15 text-sm font-bold">
+                        {fakeUser.firstName[0]}
+                        {fakeUser.lastName[0]}
+                      </span>
+                      <div className="min-w-0">
+                        <p className="truncate font-serif text-lg">{fakeUser.firstName} {fakeUser.lastName}</p>
+                        <p className="truncate text-xs text-white/70">{fakeUser.email}</p>
+                      </div>
+                    </div>
+                    <p className="mt-4 flex items-center gap-2 text-xs text-[#dcebd4]">
+                      <CheckCircle2 aria-hidden="true" className="size-4" />
+                      Compte vérifié
+                    </p>
+                  </div>
+                  <Link
+                    className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#314c35] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#263e2a]"
+                    href="/dashboard/profile"
+                    onClick={() => setActivePopover(null)}
+                  >
+                    Gérer mon profil
+                    <ChevronRight aria-hidden="true" className="size-4" />
+                  </Link>
+                </div>
+              )}
+            </div>
           </div>
         </header>
-        <Dialog
-          open={isNotificationsOpen}
-          onOpenChange={setIsNotificationsOpen}
-        >
-          <DialogContent className="max-w-md rounded-[1.5rem] border-[#dce4d7] bg-[#fffef9] p-6 shadow-[0_20px_50px_rgba(42,57,40,0.16)]">
-            <DialogHeader>
-              <DialogTitle className="font-serif text-2xl text-[#2b382b]">
-                Notifications
-              </DialogTitle>
-              <DialogDescription>
-                Les dernières nouvelles de votre bibliothèque.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="space-y-2">
-              {previewNotifications.length > 0 ? (
-                previewNotifications.map((notification) => (
-                  <div
-                    key={notification.id}
-                    className="flex gap-3 rounded-xl bg-[#f3f7f0] p-3"
-                  >
-                    <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-[#dcebd4] text-[#477242]">
-                      <Bell className="size-4" />
-                    </span>
-                    <div>
-                      <p className="text-sm font-semibold text-[#354534]">
-                        {notification.title}
-                      </p>
-                      <p className="mt-0.5 text-xs leading-5 text-[#71806e]">
-                        {notification.message}
-                      </p>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <p className="rounded-xl bg-[#f3f7f0] p-4 text-sm text-[#71806e]">
-                  Vous êtes à jour.
-                </p>
-              )}
-            </div>
-            <DialogFooter className="border-[#e3e9df] bg-[#fafcf8]">
-              <Link
-                href="/dashboard/notifications"
-                onClick={() => setIsNotificationsOpen(false)}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#314c35] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#263e2a]"
-              >
-                Voir toutes les notifications
-                <ChevronRight className="size-4" />
-              </Link>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-        <Dialog open={isProfileOpen} onOpenChange={setIsProfileOpen}>
-          <DialogContent className="max-w-md rounded-[1.5rem] border-[#dce4d7] bg-[#fffef9] p-6 shadow-[0_20px_50px_rgba(42,57,40,0.16)]">
-            <DialogHeader>
-              <DialogTitle className="font-serif text-2xl text-[#2b382b]">
-                Votre profil
-              </DialogTitle>
-              <DialogDescription>
-                Accédez rapidement à vos informations personnelles.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="rounded-2xl bg-[#314c35] p-5 text-white">
-              <div className="flex items-center gap-4">
-                <span className="grid size-14 place-items-center rounded-2xl bg-white/15 text-base font-bold">
-                  {fakeUser.firstName[0]}
-                  {fakeUser.lastName[0]}
-                </span>
-                <div>
-                  <p className="font-serif text-xl">
-                    {fakeUser.firstName} {fakeUser.lastName}
-                  </p>
-                  <p className="mt-1 text-sm text-white/70">{fakeUser.email}</p>
-                </div>
-              </div>
-              <p className="mt-5 flex items-center gap-2 text-xs text-[#dcebd4]">
-                <CheckCircle2 className="size-4" />
-                Compte vérifié
-              </p>
-            </div>
-            <DialogFooter className="border-[#e3e9df] bg-[#fafcf8]">
-              <Link
-                href="/dashboard/profile"
-                onClick={() => setIsProfileOpen(false)}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#314c35] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#263e2a]"
-              >
-                Gérer mon profil
-                <ChevronRight className="size-4" />
-              </Link>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
         <main className="mx-auto w-full max-w-360 px-5 py-8 sm:px-8 lg:px-10">
           {children}
         </main>

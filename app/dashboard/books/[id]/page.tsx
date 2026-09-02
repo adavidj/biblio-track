@@ -22,6 +22,7 @@ import {
   Trash2,
   Loader2,
   Link2,
+  Target,
 } from "lucide-react";
 import { useBookStore, type Book } from "@/lib/book-store";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
@@ -40,7 +41,7 @@ const STATUS_LABELS: Record<string, string> = {
 export default function BookDetailPage() {
   const params = useParams();
   const bookId = params.id as string;
-  const { books } = useBookStore();
+  const { books, readingGoal, setReadingGoal, updateBook } = useBookStore();
   const book = books.find((b) => b.id === bookId);
 
   const [currentPage, setCurrentPage] = useState(book?.lastReadPage || 0);
@@ -62,6 +63,9 @@ export default function BookDetailPage() {
   // Session modal
   const [showSessionModal, setShowSessionModal] = useState(false);
   const [sessionForm, setSessionForm] = useState({ pagesRead: "", startPage: "", endPage: "" });
+  const [targetPage, setTargetPage] = useState(
+    readingGoal?.bookId === bookId ? readingGoal.targetPage : book?.totalPages || 0,
+  );
 
   if (!book) {
     return (
@@ -193,9 +197,25 @@ export default function BookDetailPage() {
                   className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-sm font-medium text-foreground" />
               </div>
               <div className="self-end">
-                <Button className="gap-1.5"><Edit3 className="w-4 h-4" /> Mettre à jour</Button>
+                <Button className="gap-1.5" onClick={() => updateBook(book.id, { lastReadPage: currentPage })}><Edit3 className="w-4 h-4" /> Mettre à jour</Button>
               </div>
             </div>
+          </div>
+
+          <div className="rounded-2xl border border-[#dce4d7] bg-[#fffef9] p-6 shadow-[0_12px_32px_rgba(42,57,40,0.04)]">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#6f896b]">Objectif de lecture</p>
+                <h2 className="mt-1 font-serif text-2xl text-[#2d3d2d]">Donnez un cap à ce livre</h2>
+                <p className="mt-2 text-sm leading-6 text-[#71806e]">Choisissez la page que vous souhaitez atteindre. Cet objectif apparaîtra dans votre vue d’ensemble.</p>
+              </div>
+              <Target className="size-5 shrink-0 text-[#557a51]" />
+            </div>
+            <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+              <label className="flex-1"><span className="sr-only">Page objectif</span><input className="h-11 w-full rounded-xl border border-[#d7e1d3] bg-white px-4 text-sm font-semibold text-[#304030] outline-none focus:border-[#779971] focus:ring-4 focus:ring-[#315a3d]/[0.08]" min={1} max={book.totalPages || undefined} onChange={(event) => setTargetPage(Number(event.target.value) || 0)} type="number" value={targetPage || ""} /></label>
+              <Button className="gap-2" disabled={!targetPage} onClick={() => setReadingGoal({ bookId: book.id, targetPage })}><Target className="size-4" /> Définir l’objectif</Button>
+            </div>
+            {readingGoal?.bookId === book.id && <p className="mt-3 text-xs font-semibold text-[#4a7047]">Objectif actif : atteindre la page {readingGoal.targetPage}.</p>}
           </div>
 
           {/* Metadata */}
